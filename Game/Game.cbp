@@ -32,7 +32,12 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="astroid.h" />
+		<Unit filename="bullet.h" />
+		<Unit filename="constant.h" />
+		<Unit filename="game.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="player.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
