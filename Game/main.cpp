@@ -1,9 +1,10 @@
-#include <iostream>
+#include<iostream>
+#include<SDL.h>
+#include<SDL_image.h>
 
 using namespace std;
 
-int main()
-{
-    cout << "Hello world!" << endl;
+int main(int argc, char* argv[]) {
+
     return 0;
 }
