@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1740066994 source:c:\users\admin\advanceprograming\game\mygame\game\main.cpp
+1740148237 source:c:\users\admin\advanceprograming\game\mygame\game\main.cpp
 	<iostream>
 	<vector>
 	<cmath>
@@ -9,12 +9,39 @@
 	<SDL_image.h>
 	"constant.h"
 	"player.h"
-	"astroid.h"
+	"asteroid.h"
+	"game.h"
 
-1740067067 c:\users\admin\advanceprograming\game\mygame\game\constant.h
+1740138201 c:\users\admin\advanceprograming\game\mygame\game\constant.h
 
-1740066994 c:\users\admin\advanceprograming\game\mygame\game\player.h
+1740148028 c:\users\admin\advanceprograming\game\mygame\game\player.h
+	"constant.h"
+	"bullet.h"
 	<SDL.h>
 
 1740065326 c:\users\admin\advanceprograming\game\mygame\game\astroid.h
+
+1740142186 c:\users\admin\advanceprograming\game\mygame\game\asteroid.h
+
+1740147923 c:\users\admin\advanceprograming\game\mygame\game\game.h
+	<cmath>
+
+1740148088 source:c:\users\admin\advanceprograming\game\mygame\game\player.cpp
+	"player.h"
+	"constant.h"
+	<cmath>
+
+1740141920 source:c:\users\admin\advanceprograming\game\mygame\game\asteroid.cpp
+	<SDL.h>
+	"asteroid.h"
+	"constant.h"
+
+1740142464 source:c:\users\admin\advanceprograming\game\mygame\game\bullet.cpp
+	"constant.h"
+	"bullet.h"
+	<cmath>
+
+1740142464 c:\users\admin\advanceprograming\game\mygame\game\bullet.h
+	<SDL.h>
+	"constant.h"
 
