@@ -3,12 +3,14 @@
 #include<cmath>
 
 Spaceship::Spaceship(float start_x, float start_y)
-    :x(start_x), y(start_y), angle(0), velocityX(0), velocityY(0), shield(0) {}
+    :x(start_x), y(start_y), angle(0), velocityX(0), velocityY(0), shield(0), score(0) {}
 
 void Spaceship::update() {
 
     velocityX *= (1.0f - FRICTION);
     velocityY *= (1.0f - FRICTION);
+
+    if(shield != 0) shield--;
 
     float speed = sqrt(velocityX * velocityX + velocityY * velocityY);
     if(speed > MAX_SPEED) {
@@ -74,26 +76,29 @@ int Spaceship::getWidth() const {
     return width;
 }
 
-int Spaceship::getLifePoint() const {
-    return lifePoint;
-}
-
-void Spaceship::changeLifePoint(int newLifepoint) {
-    lifePoint = newLifepoint;
-}
-
 void Spaceship::respawn() {
     x = SCREEN_WIDTH / 2, y = SCREEN_HEIGHT / 2;
     velocityX = 0, velocityY = 0;
-    shield = 1000;
+    shield = SHIELD_TIME;
 }
 
 bool Spaceship::hasShield() {
-    if(shield != 0) shield--;
     return shield;
 }
 
 Bullet Spaceship::spawnBullet() {
     Bullet bullet = {x, y, angle, velocityX, velocityY};
     return bullet;
+}
+
+void Spaceship::resetScore() {
+    score = 0;
+}
+
+int Spaceship::getScore() const {
+    return score;
+}
+
+void Spaceship::addScore(const int amount) {
+    score += amount;
 }

@@ -13,13 +13,12 @@ void Bullet::update() {
     y += velocityY;
 
 
-    /*if(x < 0) x = SCREEN_WIDTH;
+    if(x < 0) x = SCREEN_WIDTH;
     if(x > SCREEN_WIDTH) x = 0;
     if(y < 0) y = SCREEN_HEIGHT;
     if(y > SCREEN_HEIGHT) y = 0;
     lifeTime--;
     if(lifeTime == 0) isAlive = 0;
-        */
 }
 
 void Bullet::render(SDL_Renderer* renderer) {
@@ -30,6 +29,10 @@ void Bullet::render(SDL_Renderer* renderer) {
 
 bool Bullet::alive() const {
     return isAlive;
+}
+
+void Bullet::kill() {
+    isAlive = 0;
 }
 
 float Bullet::getX() const {

@@ -5,11 +5,17 @@ const int SCREEN_HEIGHT = 600;
 
 const float BASE_SPEED = 0.2f;
 const float BASE_PLAYER_ANGLE = 2.5f;
-const float FRICTION = 0.03f;
-const float MAX_SPEED = 7.0f;
+const float BASE_ROTATE = 5.0f;
+const float FRICTION = 0.025f;
+const float MAX_SPEED = 6.0f;
 
 const float BULLET_SPEED = 10.0f;
-const int BULLET_LIFE_TIME = 100;
+const int BULLET_LIFE_TIME = 50;
 const int BULLET_SIZE = 5;
 
+const int SHIELD_TIME = 100;
 const int START_LIFE_POINT = 3;
+const int BASE_SCORE = 100;
+const int SCORE_FONT_SIZE = 24;
+
+const int BASE_ASTEROID_SIZE = 20;

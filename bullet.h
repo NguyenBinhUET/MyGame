@@ -16,6 +16,7 @@ public:
     void render(SDL_Renderer* renderer);
 
     bool alive() const;
+    void kill();
     float getX() const;
     float getY() const;
 };

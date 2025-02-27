@@ -4,8 +4,8 @@
 
 
 Asteroid::Asteroid(float start_X, float start_Y, int start_Size) :x(start_X), y(start_Y), size(start_Size) {
-    velocityX = (rand() % 5 - 2) / 2.0f + 0.1f;
-    velocityY = (rand() % 5 - 2) / 2.0f + 0.1f;
+        velocityX = (rand() % 5 - 2) / 2.0f + 0.1f;
+        velocityY = (rand() % 5 - 2) / 2.0f + 0.1f;
 };
 void Asteroid::update()  {
 
@@ -19,7 +19,7 @@ void Asteroid::update()  {
 }
 
 void Asteroid::render(SDL_Renderer* renderer) {
-    SDL_Rect rect = { (int)x - size * 10, (int)y - size * 10, size * 20, size * 20 };
+    SDL_Rect rect = { (int)x - size * BASE_ASTEROID_SIZE, (int)y - size * BASE_ASTEROID_SIZE, size * 2 * BASE_ASTEROID_SIZE, size * 2 * BASE_ASTEROID_SIZE };
     SDL_RenderDrawRect(renderer, &rect);
 }
 
