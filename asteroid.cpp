@@ -3,9 +3,19 @@
 #include"constant.h"
 
 
-Asteroid::Asteroid(float start_X, float start_Y, int start_Size) :x(start_X), y(start_Y), size(start_Size) {
-        velocityX = (rand() % 5 - 2) / 2.0f + 0.1f;
-        velocityY = (rand() % 5 - 2) / 2.0f + 0.1f;
+Asteroid::Asteroid(float start_X, float start_Y, int start_Size, int start_speedLevel) :x(start_X), y(start_Y), size(start_Size), speedLevel(start_speedLevel) {
+    if(size == 3) {
+        velocityX = (rand() % 3 - 1) / 2.0f + speedLevel * 0.1f;
+        velocityY = (rand() % 3 - 1) / 2.0f + speedLevel * 0.1f;
+    }
+    else if(size == 2) {
+        velocityX = (rand() % 5 - 2) / 2.0f + speedLevel * 0.1f;
+        velocityY = (rand() % 5 - 2) / 2.0f + speedLevel * 0.1f;
+    }
+    else {
+        velocityX = (rand() % 7 - 3) / 2.0f + speedLevel * 0.1f;
+        velocityY = (rand() % 7 - 3) / 2.0f + speedLevel * 0.1f;
+    }
 };
 void Asteroid::update()  {
 
@@ -33,4 +43,32 @@ float Asteroid::getX() const {
 
 float Asteroid::getY() const {
     return y;
+}
+
+void asteroids::spawnAsteroid() {
+    for(int i = 0; i < numOfAsteroids; i++) {
+        Asteroid asteroid = {rand() % SCREEN_WIDTH + 0.0f, rand() % SCREEN_HEIGHT + 0.0f, (rand() % 2 + 2), 1};
+        asteroidsManager.push_back(asteroid);
+    }
+}
+
+void asteroids::splitAsteroid(Asteroid& asteroid) {
+    if (asteroid.getSize() > 1) {
+        for (int i = 0; i < 2; ++i) {
+            float x = asteroid.getX(), y = asteroid.getY();
+            int size = asteroid.getSize();
+            Asteroid newAsteroids = {x, y, size - 1, 2};
+            asteroidsManager.push_back(newAsteroids);
+        }
+    }
+}
+
+void asteroids::render(SDL_Renderer* renderer) {
+    for(auto& asteroid : asteroidsManager) {
+        asteroid.render(renderer);
+    }
+}
+
+void asteroids::~Asteroids() {
+    asteroidsManager.clear();
 }

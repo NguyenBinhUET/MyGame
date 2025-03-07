@@ -45,23 +45,25 @@
 	<SDL.h>
 	"constant.h"
 
-1740674629 source:c:\users\admin\advanceprograming\game\mygame\asteroid.cpp
+1741357167 source:c:\users\admin\advanceprograming\game\mygame\asteroid.cpp
 	<SDL.h>
 	"asteroid.h"
 	"constant.h"
 
-1740674654 c:\users\admin\advanceprograming\game\mygame\asteroid.h
+1741360746 c:\users\admin\advanceprograming\game\mygame\asteroid.h
+	<vector>
 
-1740673185 c:\users\admin\advanceprograming\game\mygame\constant.h
+1740745980 c:\users\admin\advanceprograming\game\mygame\constant.h
 
 1740668208 source:c:\users\admin\advanceprograming\game\mygame\bullet.cpp
 	"constant.h"
 	"bullet.h"
 	<cmath>
 
-1740668311 c:\users\admin\advanceprograming\game\mygame\bullet.h
+1741360762 c:\users\admin\advanceprograming\game\mygame\bullet.h
 	<SDL.h>
 	"constant.h"
+	<vector>
 
 1740674702 source:c:\users\admin\advanceprograming\game\mygame\player.cpp
 	"player.h"
@@ -73,7 +75,7 @@
 	"bullet.h"
 	<SDL.h>
 
-1740676643 source:c:\users\admin\advanceprograming\game\mygame\main.cpp
+1741340578 source:c:\users\admin\advanceprograming\game\mygame\main.cpp
 	<iostream>
 	<string>
 	<vector>
@@ -83,21 +85,59 @@
 	<SDL.h>
 	<SDL_image.h>
 	<SDL_ttf.h>
+	<SDL_mixer.h>
 	"constant.h"
 	"player.h"
 	"asteroid.h"
 	"game.h"
 
-1740677181 c:\users\admin\advanceprograming\game\mygame\game.h
+1741360746 c:\users\admin\advanceprograming\game\mygame\game.h
 	<SDL.h>
 	<SDL_ttf.h>
+	<SDL_image.h>
 	<vector>
+	<string>
 	"player.h"
+	"constant.h"
 	"bullet.h"
 	"asteroid.h"
+	"background.h"
+	"sound.h"
 
-1740677131 source:c:\users\admin\advanceprograming\game\mygame\game.cpp
+1741342386 source:c:\users\admin\advanceprograming\game\mygame\game.cpp
 	"game.h"
 	<iostream>
 	<cmath>
+
+1740731377 c:\users\admin\advanceprograming\game\mygame\background.h
+	"helper.h"
+	<SDL.h>
+
+1740731012 c:\users\admin\advanceprograming\game\mygame\helper.h
+	<string>
+	<SDL.h>
+	<SDL_image.h>
+
+1741315910 source:c:\users\admin\advanceprograming\game\mygame\background.cpp
+	"background.h"
+	"constant.h"
+	<SDL_image.h>
+	<iostream>
+	<cmath>
+
+1740731110 source:c:\users\admin\advanceprograming\game\mygame\helper.cpp
+	"helper.h"
+	<SDL_image.h>
+
+1741320476 source:c:\users\admin\advanceprograming\game\mygame\sound.cpp
+	"sound.h"
+	<map>
+	<string>
+	<SDL.h>
+	<iostream>
+
+1741360746 c:\users\admin\advanceprograming\game\mygame\sound.h
+	<SDL_mixer.h>
+	<map>
+	<string>
 

@@ -41,3 +41,7 @@ float Bullet::getX() const {
 float Bullet::getY() const {
     return y;
 }
+
+void bullets::addBullet(Bullet bullet) {
+    bulletsManager.push_back(bullet);
+}

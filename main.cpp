@@ -7,6 +7,7 @@
 #include<SDL.h>
 #include<SDL_image.h>
 #include<SDL_ttf.h>
+#include<SDL_mixer.h>
 
 #include"constant.h"
 #include"player.h"
@@ -15,21 +16,18 @@
 
 using namespace std;
 
-bool isRunning = 1;
-
 SDL_Window* window = nullptr;
 SDL_Renderer* renderer = nullptr;
 TTF_Font* font = nullptr;
 
 void gameLoop(game Game) {
     Game.resetGame();
+    Game.init();
     SDL_Event event;
     const Uint8* keystate = SDL_GetKeyboardState(NULL);
-
-
-    while (isRunning) {
+    while (Game.isRunning) {
         while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) isRunning = false;
+            if (event.type == SDL_QUIT) Game.isRunning = false;
             Game.handleInputTap(event);
         }
         Game.handleInputHold(keystate);
@@ -45,8 +43,15 @@ void gameLoop(game Game) {
 int main(int argc, char* argv[]) {
 
     if(SDL_Init(SDL_INIT_VIDEO) != 0) cout << "SDL_Init failed. ERROR: " << SDL_GetError() << "\n";
-    if(SDL_Init(IMG_INIT_PNG) != 0) cout << "IMG_Init failed. ERROR: " << SDL_GetError() << "\n";
+    if(IMG_Init(IMG_INIT_PNG) == 0) cout << "IMG_Init failed. ERROR: " << SDL_GetError() << "\n";
     if(TTF_Init() == -1) cout << "TTF_Init failed. ERROR: " << SDL_GetError() << "\n";
+    if(SDL_Init(SDL_INIT_AUDIO) < 0) cout << "SDL_Init failed. ERROR: " << SDL_GetError() << "\n";
+    if(Mix_Init(MIX_INIT_OGG) != MIX_INIT_OGG) cout << "SDL_Mixer failed. ERROR: " << SDL_GetError() << "\n";
+
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        cout << "SDL_mixer could not open audio: " <<  Mix_GetError();
+        return 1;
+    }
 
     window = SDL_CreateWindow("Astroids Destroyer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -57,7 +62,7 @@ int main(int argc, char* argv[]) {
     srand(time(0));
     gameLoop(Game);
 
-    TTF_CloseFont(font);
+    Mix_CloseAudio();
     TTF_Quit();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

@@ -1,13 +1,13 @@
 #pragma once
 
 const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
+const int SCREEN_HEIGHT = 800;
 
 const float BASE_SPEED = 0.2f;
 const float BASE_PLAYER_ANGLE = 2.5f;
-const float BASE_ROTATE = 5.0f;
+const float BASE_ROTATE = 4.0f;
 const float FRICTION = 0.025f;
-const float MAX_SPEED = 6.0f;
+const float MAX_SPEED = 8.0f;
 
 const float BULLET_SPEED = 10.0f;
 const int BULLET_LIFE_TIME = 50;
@@ -19,3 +19,5 @@ const int BASE_SCORE = 100;
 const int SCORE_FONT_SIZE = 24;
 
 const int BASE_ASTEROID_SIZE = 20;
+
+const float SCROLL_SPEED = 50.0f;

@@ -16,7 +16,9 @@
 				</Compiler>
 				<Linker>
 					<Add option="-lSDL2_ttf" />
+					<Add option="-lSDL2_mixer" />
 					<Add library="SDL2_ttf" />
+					<Add library="SDL2_mixer" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -38,15 +40,25 @@
 		</Compiler>
 		<Unit filename="asteroid.cpp" />
 		<Unit filename="asteroid.h" />
+		<Unit filename="background.cpp" />
+		<Unit filename="background.h" />
 		<Unit filename="bullet.cpp" />
 		<Unit filename="bullet.h" />
 		<Unit filename="constant.h" />
 		<Unit filename="fonts/Nasa21.ttf" />
 		<Unit filename="game.cpp" />
 		<Unit filename="game.h" />
+		<Unit filename="helper.cpp" />
+		<Unit filename="helper.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="player.cpp" />
 		<Unit filename="player.h" />
+		<Unit filename="sound.cpp" />
+		<Unit filename="sound.h" />
+		<Unit filename="sounds/asteroids-explosion.ogg" />
+		<Unit filename="sounds/ship-explosion.ogg" />
+		<Unit filename="sounds/shoot-laser.ogg" />
+		<Unit filename="sounds/thrust.ogg" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

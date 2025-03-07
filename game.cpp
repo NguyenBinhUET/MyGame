@@ -2,7 +2,8 @@
 #include<iostream>
 #include<cmath>
 
-game::game(SDL_Renderer* renderer, TTF_Font* font) :player(SCREEN_WIDTH/2,SCREEN_HEIGHT/2),lives(START_LIFE_POINT), renderer(renderer), font(font){};
+game::game(SDL_Renderer* renderer, TTF_Font* font)
+    :player(SCREEN_WIDTH/2 + 0.0f,SCREEN_HEIGHT/2 +0.0f), Background(renderer, "textures/Blue.png"), font(font), renderer(renderer), isRunning(1) {};
 
 game::~game() {
     if (font) {
@@ -10,14 +11,34 @@ game::~game() {
     }
 }
 
+void game::init() {
+    Sound.loadAllSound();
+    Sound.play("space-station.ogg", -1, 8, -1);
+}
+
 void game::handleInputHold(const Uint8* keystate) {
-    if (!gameOver) {
+    if(!gameOver) {
         if(keystate[SDL_SCANCODE_LEFT]) player.rotateLeft(BASE_ROTATE);
         if(keystate[SDL_SCANCODE_RIGHT]) player.rotateRight(BASE_ROTATE);
-        if(keystate[SDL_SCANCODE_UP]) player.moveForward(BASE_SPEED);
+        if(keystate[SDL_SCANCODE_UP]) {
+            player.moveForward(BASE_SPEED);
+        }
     }
-    if (keystate[SDL_SCANCODE_SPACE] && gameOver) {
+    if(keystate[SDL_SCANCODE_SPACE] && gameOver) {
         resetGame();
+    }
+    if(keystate[SDL_SCANCODE_UP]) {
+        if(!thrusting) {
+            Sound.playFadeIn("thrust.ogg", -1, 8, 7, 300);
+            thrusting = 1;
+        }
+    }
+    else if(thrusting) {
+        Mix_FadeOutChannel(7, 300);
+        thrusting = 0;
+    }
+    if(keystate[SDL_SCANCODE_E] && gameOver) {
+        isRunning = 0;
     }
 }
 
@@ -28,6 +49,7 @@ void game::handleInputTap(const SDL_Event& event) {
             if(!spacePressed) {
                 bullets.push_back(player.spawnBullet());
                 spacePressed = 1;
+                Sound.play("shoot-laser.ogg", 0, 8, -1);
             }
         }
     }
@@ -38,12 +60,16 @@ void game::handleInputTap(const SDL_Event& event) {
 
 void game::update() {
     if (!gameOver) {
+        Background.update(0.016f);
         player.update();
-        for(int i = 0; i < asteroids.size(); i++) {
+
+        if(asteroids.size() == 0) spawnAsteroid();
+        for(int i = asteroids.size() - 1; i >= 0; i--) {
             //update asteroids
             asteroids[i].update();
             if (checkCollision1(player, asteroids[i])) {
                 lives--;
+                Sound.play("ship-explosion.ogg", 0, 32, -1);
                 if (lives <= 0) {
                     gameOver = true;
                 } else player.respawn();
@@ -52,17 +78,18 @@ void game::update() {
             }
         }
         //update bullets
-        for(int i = 0; i < bullets.size(); i++) {
+        for(int i = bullets.size() - 1; i >= 0; i--) {
             bullets[i].update();
             if(!bullets[i].alive()) bullets.erase(bullets.begin() + i);
         }
-        for(int i = 0; i < asteroids.size(); i++) {
-            for(int j = 0; j < bullets.size(); j++) {
+        for(int i = asteroids.size() - 1; i >= 0 ; i--) {
+            for(int j = bullets.size() - 1; j >= 0; j--) {
                 if (checkCollision2(bullets[j], asteroids[i])) {
                     splitAsteroid(asteroids[i]);
+                    Sound.play("asteroids-explosion.ogg", 0, 32, -1);
+                    player.addScore(asteroids[i].getSize() * BASE_SCORE);
                     asteroids.erase(asteroids.begin() + i);
                     bullets.erase(bullets.begin() + j);
-                    player.addScore(BASE_SCORE);
                 }
             }
         }
@@ -74,15 +101,11 @@ void game::render() {
     SDL_RenderClear(renderer);
 
     if (!gameOver) {
+        Background.render();
         player.render(renderer);
 
-        for (auto& asteroid : asteroids) {
-            asteroid.render(renderer);
-        }
-
-        for (auto& bullet : bullets) {
-            bullet.render(renderer);
-        }
+        asteroids.render(renderer);
+        bullets.render(renderer);
 
         renderScore(renderer, font, player);
     }
@@ -91,22 +114,18 @@ void game::render() {
     SDL_RenderPresent(renderer);
 }
 
-void game::spawnAsteroid() {
-    Asteroid asteroid = {rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT, (rand() % 3 + 1)};
-    asteroids.push_back(asteroid);
-}
+
 
 void game::resetGame() {
     gameOver = false;
-    lives = 3;
+    lives = START_LIFE_POINT;
     player.resetScore();
     player = Spaceship(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
 
     asteroids.clear();
+    bullets.clear();
 
-    for (int i = 0; i < 5; ++i) {
-        spawnAsteroid();
-    }
+    spawnAsteroid();
 }
 
 bool game::checkCollision1(Spaceship& player, Asteroid& asteroid) {
@@ -117,17 +136,6 @@ bool game::checkCollision1(Spaceship& player, Asteroid& asteroid) {
 bool game::checkCollision2(Bullet& bullet, Asteroid& asteroid) {
     float distance = sqrt(pow(bullet.getX() - asteroid.getX(), 2) + pow(bullet.getY() - asteroid.getY(), 2));
     return distance < (1 + asteroid.getSize() * BASE_ASTEROID_SIZE);
-}
-
-void game::splitAsteroid(Asteroid& asteroid) {
-    if (asteroid.getSize() > 1) {
-        for (int i = 0; i < 2; ++i) {
-            float x = asteroid.getX(), y = asteroid.getY();
-            int size = asteroid.getSize();
-            Asteroid newAsteroid = {x, y, size - 1};
-            asteroids.push_back(newAsteroid);
-        }
-    }
 }
 
 void game::renderScore(SDL_Renderer* renderer, TTF_Font* font, Spaceship& player) {
@@ -183,3 +191,4 @@ void game::renderGameOver(SDL_Renderer* renderer, TTF_Font* font, int score) {
     SDL_DestroyTexture(scoreTexture);
     SDL_FreeSurface(scoreSurface);
 }
+
