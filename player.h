@@ -33,7 +33,7 @@ public:
 
     bool hasShield();
 
-    Bullet spawnBullet();
+    bullet spawnBullet();
 
     void resetScore();
     void addScore(const int amount);

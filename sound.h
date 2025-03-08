@@ -7,7 +7,7 @@ using namespace std;
 
 class sound {
 private:
-    map<string, Mix_Music*> soundManager;
+    map<string, Mix_Chunk*> soundManager;
 public:
     void loadSound(const string& filePath);
     void loadAllSound();

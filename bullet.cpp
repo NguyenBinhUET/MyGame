@@ -2,13 +2,13 @@
 #include"bullet.h"
 #include<cmath>
 
-Bullet::Bullet(float startX, float startY, float startAngle, float playerVx, float playerVy) :x(startX), y(startY), angle(startAngle) {
+bullet::bullet(float startX, float startY, float startAngle, float playerVx, float playerVy) :x(startX), y(startY), angle(startAngle) {
     float radian = angle * M_PI / 180.0f;
     velocityX = cos(radian) * BULLET_SPEED + playerVx;
     velocityY = sin(radian) * BULLET_SPEED + playerVy;
 }
 
-void Bullet::update() {
+void bullet::update() {
     x += velocityX;
     y += velocityY;
 
@@ -21,27 +21,23 @@ void Bullet::update() {
     if(lifeTime == 0) isAlive = 0;
 }
 
-void Bullet::render(SDL_Renderer* renderer) {
+void bullet::render(SDL_Renderer* renderer) {
     float radian = angle * M_PI / 180.0f;
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderDrawLine(renderer, x, y, cos(radian) * BULLET_SIZE + x, sin(radian) * BULLET_SIZE + y);
 }
 
-bool Bullet::alive() const {
+bool bullet::alive() const {
     return isAlive;
 }
 
-void Bullet::kill() {
+void bullet::kill() {
     isAlive = 0;
 }
 
-float Bullet::getX() const {
+float bullet::getX() const {
     return x;
 }
-float Bullet::getY() const {
+float bullet::getY() const {
     return y;
-}
-
-void bullets::addBullet(Bullet bullet) {
-    bulletsManager.push_back(bullet);
 }

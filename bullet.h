@@ -3,7 +3,9 @@
 #include"constant.h"
 #include<vector>
 
-class Bullet {
+using namespace std;
+
+class bullet {
 private:
     float x, y;
     float velocityX = 0, velocityY = 0, angle;
@@ -11,7 +13,7 @@ private:
     bool isAlive = 1;
 public:
     //init
-    Bullet(float startX, float startY, float startAngle, float playerVx, float playerVy);
+    bullet(float startX, float startY, float startAngle, float playerVx, float playerVy);
 
     void update();
     void render(SDL_Renderer* renderer);
@@ -22,17 +24,4 @@ public:
     bool alive() const;
     float getX() const;
     float getY() const;
-};
-
-class bullets {
-private:
-    vector<Bullet> bulletsManager;
-public:
-    //destruct
-    ~bullets()
-
-    void addBullet(Bullet bullet);
-
-
-    void render() const;
 };

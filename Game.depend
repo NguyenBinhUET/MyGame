@@ -45,37 +45,37 @@
 	<SDL.h>
 	"constant.h"
 
-1741357167 source:c:\users\admin\advanceprograming\game\mygame\asteroid.cpp
+1741407054 source:c:\users\admin\advanceprograming\game\mygame\asteroid.cpp
 	<SDL.h>
 	"asteroid.h"
 	"constant.h"
 
-1741360746 c:\users\admin\advanceprograming\game\mygame\asteroid.h
+1741407869 c:\users\admin\advanceprograming\game\mygame\asteroid.h
 	<vector>
 
 1740745980 c:\users\admin\advanceprograming\game\mygame\constant.h
 
-1740668208 source:c:\users\admin\advanceprograming\game\mygame\bullet.cpp
+1741407055 source:c:\users\admin\advanceprograming\game\mygame\bullet.cpp
 	"constant.h"
 	"bullet.h"
 	<cmath>
 
-1741360762 c:\users\admin\advanceprograming\game\mygame\bullet.h
+1741407055 c:\users\admin\advanceprograming\game\mygame\bullet.h
 	<SDL.h>
 	"constant.h"
 	<vector>
 
-1740674702 source:c:\users\admin\advanceprograming\game\mygame\player.cpp
+1741403003 source:c:\users\admin\advanceprograming\game\mygame\player.cpp
 	"player.h"
 	"constant.h"
 	<cmath>
 
-1740674693 c:\users\admin\advanceprograming\game\mygame\player.h
+1741402971 c:\users\admin\advanceprograming\game\mygame\player.h
 	"constant.h"
 	"bullet.h"
 	<SDL.h>
 
-1741340578 source:c:\users\admin\advanceprograming\game\mygame\main.cpp
+1741408496 source:c:\users\admin\advanceprograming\game\mygame\main.cpp
 	<iostream>
 	<string>
 	<vector>
@@ -91,7 +91,7 @@
 	"asteroid.h"
 	"game.h"
 
-1741360746 c:\users\admin\advanceprograming\game\mygame\game.h
+1741408762 c:\users\admin\advanceprograming\game\mygame\game.h
 	<SDL.h>
 	<SDL_ttf.h>
 	<SDL_image.h>
@@ -104,7 +104,7 @@
 	"background.h"
 	"sound.h"
 
-1741342386 source:c:\users\admin\advanceprograming\game\mygame\game.cpp
+1741407847 source:c:\users\admin\advanceprograming\game\mygame\game.cpp
 	"game.h"
 	<iostream>
 	<cmath>
@@ -129,14 +129,14 @@
 	"helper.h"
 	<SDL_image.h>
 
-1741320476 source:c:\users\admin\advanceprograming\game\mygame\sound.cpp
+1741403264 source:c:\users\admin\advanceprograming\game\mygame\sound.cpp
 	"sound.h"
 	<map>
 	<string>
 	<SDL.h>
 	<iostream>
 
-1741360746 c:\users\admin\advanceprograming\game\mygame\sound.h
+1741403237 c:\users\admin\advanceprograming\game\mygame\sound.h
 	<SDL_mixer.h>
 	<map>
 	<string>

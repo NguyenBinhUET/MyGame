@@ -86,9 +86,9 @@ bool Spaceship::hasShield() {
     return shield;
 }
 
-Bullet Spaceship::spawnBullet() {
-    Bullet bullet = {x, y, angle, velocityX, velocityY};
-    return bullet;
+bullet Spaceship::spawnBullet() {
+    bullet Bullet = {x, y, angle, velocityX, velocityY};
+    return Bullet;
 }
 
 void Spaceship::resetScore() {

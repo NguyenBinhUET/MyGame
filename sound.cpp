@@ -8,7 +8,7 @@ using namespace std;
 
 void sound::loadSound(const string& filePath) {
     string fileName = filePath.substr(7);
-    soundManager[fileName] = Mix_LoadMUS(filePath.c_str());
+    soundManager[fileName] = Mix_LoadWAV(filePath.c_str());
 }
 
 void sound::loadAllSound() {
@@ -22,7 +22,7 @@ void sound::loadAllSound() {
 sound::~sound() {
     for (auto& pair : soundManager) {
         if (pair.second != nullptr) {
-            Mix_FreeMusic(pair.second);
+            Mix_FreeChunk(pair.second);
         }
     }
     soundManager.clear();
@@ -30,11 +30,11 @@ sound::~sound() {
 }
 
 void sound::play(const string& file, const int& loops, const int& volume, const int& channel) {
-    Mix_VolumeMusic(soundManager[file], volume);
+    Mix_VolumeChunk(soundManager[file], volume);
     Mix_PlayChannel(channel, soundManager[file], loops);
 }
 
 void sound::playFadeIn(const string& file, const int& loops, const int& volume, const int& channel, const int& ms) {
-    Mix_VolumeMusic(soundManager[file], volume);
+    Mix_VolumeChunk(soundManager[file], volume);
     Mix_FadeInChannel(channel, soundManager[file], loops, ms);
 }

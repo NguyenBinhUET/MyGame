@@ -15,17 +15,21 @@ using namespace std;
 
 class game {
 private:
+    Spaceship player;
     background Background;
     sound Sound;
     TTF_Font* font;
     SDL_Renderer* renderer;
 
-    Spaceship player;
-    asteroids Asteroids;
-    bullets Bullets;
+    vector<asteroid> asteroidsManager;
+    int numOfAsteroids;
+    int speedLevel;
+
+    vector<bullet> bulletsManager;
+
 
     bool gameOver;
-    bool isRunning;
+    bool running;
     bool spacePressed = 0, thrusting = 0;
 
     int lives;
@@ -34,6 +38,8 @@ public:
     ~game();
     void init();
     void resetGame();
+    void spawnAsteroid();
+    void splitAsteroid(const int i);
 
     //handle input
     void handleInputHold(const Uint8* keystate);
@@ -42,8 +48,8 @@ public:
     void update();
 
     //check collision
-    bool checkCollision1(Spaceship& s, Asteroid& a);
-    bool checkCollision2(Bullet& b, Asteroid& a);
+    bool checkCollision1(Spaceship& player, asteroid& Asteroid);
+    bool checkCollision2(bullet& Bullet, asteroid& Asteroid);
 
     //render
     void render();
@@ -53,8 +59,10 @@ public:
     //getter
     bool isOverGame() const {return gameOver;};
     int getScore() const { return player.getScore();};
+    bool isRunning() const {return running;};
 
     //setter
-    void setGameOver(bool value) { gameOver = value;};
+    void setGameOver(const bool value) { gameOver = value;};
+    void setRunning(const bool value) {running = value;};
 };
 

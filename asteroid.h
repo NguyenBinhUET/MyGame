@@ -3,7 +3,7 @@
 
 using namespace std;
 
-class Asteroid {
+class asteroid {
 private:
     float x, y;
     float velocityX, velocityY;
@@ -11,9 +11,9 @@ private:
     int speedLevel;
 public:
     //init
-    Asteroid(float start_X, float start_Y, int start_Size, int start_speedLevel);
+    asteroid(float start_X, float start_Y, int start_Size, int start_speedLevel);
     //destruct
-    ~Asteroid();
+    //~asteroid();
 
     void update();
     void render(SDL_Renderer* renderer);
@@ -25,19 +25,4 @@ public:
     int getSize() const;
     float getX() const;
     float getY() const;
-};
-
-class asteroids {
-private:
-    vector<Asteroid> asteroidsManager;
-    int numOfAsteroids;
-    int speedLevel;
-public:
-    //destruct
-    ~asteroids();
-
-    void splitAsteroid(Asteroid& asteroid);
-    void spawnAsteroid();
-
-    void render(SDL_Renderer* renderer);
 };

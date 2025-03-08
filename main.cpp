@@ -21,13 +21,13 @@ SDL_Renderer* renderer = nullptr;
 TTF_Font* font = nullptr;
 
 void gameLoop(game Game) {
-    Game.resetGame();
     Game.init();
+    Game.resetGame();
     SDL_Event event;
     const Uint8* keystate = SDL_GetKeyboardState(NULL);
-    while (Game.isRunning) {
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) Game.isRunning = false;
+    while(Game.isRunning()) {
+        while(SDL_PollEvent(&event)) {
+            if(event.type == SDL_QUIT) Game.setRunning(0);
             Game.handleInputTap(event);
         }
         Game.handleInputHold(keystate);
