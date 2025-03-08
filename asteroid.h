@@ -12,8 +12,6 @@ private:
 public:
     //init
     asteroid(float start_X, float start_Y, int start_Size, int start_speedLevel);
-    //destruct
-    //~asteroid();
 
     void update();
     void render(SDL_Renderer* renderer);

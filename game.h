@@ -33,6 +33,11 @@ private:
     bool spacePressed = 0, thrusting = 0;
 
     int lives;
+
+    //timer
+    Uint32 startTime;
+    int countedTime;
+
 public:
     game(SDL_Renderer* renderer, TTF_Font* font);
     ~game();
@@ -55,6 +60,7 @@ public:
     void render();
     void renderScore(SDL_Renderer* renderer, TTF_Font* font, Spaceship& player);
     void renderGameOver(SDL_Renderer* renderer, TTF_Font* font, int score);
+    void renderTimer(SDL_Renderer* renderer, TTF_Font* font);
 
     //getter
     bool isOverGame() const {return gameOver;};

@@ -13,11 +13,20 @@ game::~game() {
 
 void game::init() {
     running = 1;
+    numOfAsteroids = START_ASTEROIDS;
+    speedLevel = 1;
     Sound.loadAllSound();
     Sound.play("space-station.ogg", -1, 8, -1);
 }
 
 void game::resetGame() {
+    //set timer
+    startTime = SDL_GetTicks();
+    countedTime = 0.0f;
+
+    numOfAsteroids = START_ASTEROIDS;
+    speedLevel = 1;
+
     gameOver = false;
     lives = START_LIFE_POINT;
     player.resetScore();
@@ -73,9 +82,17 @@ void game::handleInputTap(const SDL_Event& event) {
 
 void game::update() {
     if (!gameOver) {
+        //update timer
+        Uint32 currentTime = SDL_GetTicks();
+        countedTime = (currentTime - startTime) / 1000; // to second
+
         Background.update(0.016f);
         player.update();
-        if(asteroidsManager.size() == 0) spawnAsteroid();
+        if(asteroidsManager.size() == 0) {
+            numOfAsteroids = min(MAX_ASTEROIDS, START_ASTEROIDS + countedTime / 30);
+            speedLevel = min(MAX_SPEED_LEVEL, START_SPEED_LEVEL + countedTime / 15);
+            spawnAsteroid();
+        }
         for(int i = asteroidsManager.size() - 1; i >= 0; i--) {
             //update asteroids
             asteroidsManager[i].update();
@@ -123,8 +140,15 @@ void game::splitAsteroid(const int i) {
 
 void game::spawnAsteroid() {
     for(int i = 0; i < numOfAsteroids; i++) {
-        asteroid newAsteroid = {rand() % SCREEN_WIDTH + 0.0f, rand() % SCREEN_HEIGHT + 0.0f, (rand() % 2 + 2), 1};
-        asteroidsManager.push_back(newAsteroid);
+        int f = rand() % 2;
+        if(f) {
+            asteroid newAsteroid = {0, rand() % SCREEN_HEIGHT + 0.0f, (rand() % 2 + 2), 1};
+            asteroidsManager.push_back(newAsteroid);
+        }
+        else {
+            asteroid newAsteroid = {rand() % SCREEN_WIDTH + 0.0f, 0, (rand() % 2 + 2), 1};
+            asteroidsManager.push_back(newAsteroid);
+        }
     }
 }
 
@@ -152,6 +176,7 @@ void game::render() {
         for(auto& bullet : bulletsManager) bullet.render(renderer);
 
         renderScore(renderer, font, player);
+        renderTimer(renderer, font);
     }
     else renderGameOver(renderer, font, player.getScore());
 
@@ -212,3 +237,25 @@ void game::renderGameOver(SDL_Renderer* renderer, TTF_Font* font, int score) {
     SDL_FreeSurface(scoreSurface);
 }
 
+void game::renderTimer(SDL_Renderer* renderer, TTF_Font* font) {
+    string minute = to_string(countedTime / 60), second = to_string(countedTime % 60);
+    if(minute.size() < 2) minute = "0" + minute;
+    if(second.size() < 2) second = "0" + second;
+    string timerToRender = minute + ":" + second;
+    SDL_Color red = {255, 0, 0, 255};
+    int t = 0;
+    SDL_Surface* timerSurface = TTF_RenderText_Solid(font, timerToRender.c_str(), red);
+    SDL_Texture* timerTexture = SDL_CreateTextureFromSurface(renderer, timerSurface);
+
+    SDL_Rect timerRect;
+    timerRect.w = timerSurface->w;
+    timerRect.h = timerSurface->h;
+    timerRect.x = (SCREEN_WIDTH - timerRect.w - 10);
+    timerRect.y = 10;
+
+    SDL_RenderCopy(renderer, timerTexture, NULL, &timerRect);
+
+    SDL_DestroyTexture(timerTexture);
+    SDL_FreeSurface(timerSurface);
+
+}

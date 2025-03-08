@@ -19,5 +19,9 @@ const int BASE_SCORE = 100;
 const int SCORE_FONT_SIZE = 24;
 
 const int BASE_ASTEROID_SIZE = 20;
+const int START_ASTEROIDS = 5;
+const int MAX_ASTEROIDS = 20;
+const int START_SPEED_LEVEL = 0;
+const int MAX_SPEED_LEVEL = 20;
 
 const float SCROLL_SPEED = 50.0f;

@@ -5,16 +5,20 @@
 
 asteroid::asteroid(float start_X, float start_Y, int start_Size, int start_speedLevel) :x(start_X), y(start_Y), size(start_Size), speedLevel(start_speedLevel) {
     if(size == 3) {
-        velocityX = (rand() % 3 - 1) / 2.0f + speedLevel * 0.1f;
-        velocityY = (rand() % 3 - 1) / 2.0f + speedLevel * 0.1f;
+        velocityX = (rand() % 3 - 1) * (0.7f + 15 * 0.05f);
+        velocityY = (rand() % 3 - 1) * (0.7f + 15 * 0.05f);
     }
     else if(size == 2) {
-        velocityX = (rand() % 5 - 2) / 2.0f + speedLevel * 0.1f;
-        velocityY = (rand() % 5 - 2) / 2.0f + speedLevel * 0.1f;
+        velocityX = (rand() % 5 - 2) * (0.7f + 15 * 0.05f);
+        velocityY = (rand() % 5 - 2) * (0.7F + 15 * 0.05f);
     }
     else {
-        velocityX = (rand() % 7 - 3) / 2.0f + speedLevel * 0.1f;
-        velocityY = (rand() % 7 - 3) / 2.0f + speedLevel * 0.1f;
+        velocityX = (rand() % 7 - 3) * (0.7f + 15 * 0.05f);
+        velocityY = (rand() % 7 - 3) * (0.7f + 15 * 0.05f);
+    }
+    if(velocityX == 0 && velocityY == 0) {
+        velocityX = rand() % 5 + 1;
+        velocityY = rand() % 5 + 1;
     }
 };
 void asteroid::update()  {

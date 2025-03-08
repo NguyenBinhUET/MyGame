@@ -45,15 +45,15 @@
 	<SDL.h>
 	"constant.h"
 
-1741407054 source:c:\users\admin\advanceprograming\game\mygame\asteroid.cpp
+1741423593 source:c:\users\admin\advanceprograming\game\mygame\asteroid.cpp
 	<SDL.h>
 	"asteroid.h"
 	"constant.h"
 
-1741407869 c:\users\admin\advanceprograming\game\mygame\asteroid.h
+1741422525 c:\users\admin\advanceprograming\game\mygame\asteroid.h
 	<vector>
 
-1740745980 c:\users\admin\advanceprograming\game\mygame\constant.h
+1741423819 c:\users\admin\advanceprograming\game\mygame\constant.h
 
 1741407055 source:c:\users\admin\advanceprograming\game\mygame\bullet.cpp
 	"constant.h"
@@ -75,7 +75,7 @@
 	"bullet.h"
 	<SDL.h>
 
-1741408496 source:c:\users\admin\advanceprograming\game\mygame\main.cpp
+1741422777 source:c:\users\admin\advanceprograming\game\mygame\main.cpp
 	<iostream>
 	<string>
 	<vector>
@@ -91,7 +91,7 @@
 	"asteroid.h"
 	"game.h"
 
-1741408762 c:\users\admin\advanceprograming\game\mygame\game.h
+1741421062 c:\users\admin\advanceprograming\game\mygame\game.h
 	<SDL.h>
 	<SDL_ttf.h>
 	<SDL_image.h>
@@ -104,7 +104,7 @@
 	"background.h"
 	"sound.h"
 
-1741407847 source:c:\users\admin\advanceprograming\game\mygame\game.cpp
+1741424112 source:c:\users\admin\advanceprograming\game\mygame\game.cpp
 	"game.h"
 	<iostream>
 	<cmath>
