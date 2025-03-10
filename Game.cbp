@@ -45,6 +45,7 @@
 		<Unit filename="bullet.cpp" />
 		<Unit filename="bullet.h" />
 		<Unit filename="constant.h" />
+		<Unit filename="explosion.h" />
 		<Unit filename="fonts/Nasa21.ttf" />
 		<Unit filename="game.cpp" />
 		<Unit filename="game.h" />

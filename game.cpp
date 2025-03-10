@@ -3,18 +3,42 @@
 #include<cmath>
 
 game::game(SDL_Renderer* renderer, TTF_Font* font)
-    :player(SCREEN_WIDTH/2 + 0.0f,SCREEN_HEIGHT/2 +0.0f), Background(renderer, "textures/Blue.png"), font(font), renderer(renderer) {};
+    :player(SCREEN_WIDTH/2 + 0.0f,SCREEN_HEIGHT/2 +0.0f, renderer), Background(renderer, "textures/Blue.png"), font(font), renderer(renderer) {};
 
 game::~game() {
     if (font) {
         TTF_CloseFont(font);
     }
+    for(int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3; j++) {
+            SDL_DestroyTexture(asteroidTextures[i][j]);
+        }
+        asteroidTextures[i].clear();
+    }
+    asteroidTextures.clear();
+    SDL_DestroyTexture(bulletTexture);
 }
 
 void game::init() {
     running = 1;
     numOfAsteroids = START_ASTEROIDS;
     speedLevel = 1;
+
+    //load asteroid textures
+    for(int i = 0; i < 3; i++) {
+        vector<SDL_Texture*> temp;
+        for(int j = 0; j < 3; j++) {
+            string fileName = "textures/asteroid" + to_string(i + 1) + "-" + to_string(j + 1) + ".png";
+            temp.push_back(loadTexture(renderer, fileName.c_str()));
+            if(temp[j] == nullptr) cout << "No input for: " << fileName << "\n";
+        }
+        asteroidTextures.push_back(temp);
+        temp.clear();
+    }
+
+    //load bullet texture
+    bulletTexture = loadTexture(renderer, "textures/beam1.png");
+
     Sound.loadAllSound();
     Sound.play("space-station.ogg", -1, 8, -1);
 }
@@ -30,7 +54,7 @@ void game::resetGame() {
     gameOver = false;
     lives = START_LIFE_POINT;
     player.resetScore();
-    player = Spaceship(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+    player = Spaceship(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, renderer);
 
     asteroidsManager.clear();
     bulletsManager.clear();
@@ -170,10 +194,15 @@ void game::render() {
         Background.render();
         player.render(renderer);
         //render asteroids
-        for(auto& asteroid : asteroidsManager) asteroid.render(renderer);
+        for(auto& asteroid : asteroidsManager) {
+            int size = asteroid.getSize(), x = asteroid.getX() - size * BASE_ASTEROID_SIZE , y = asteroid.getY() -  size * BASE_ASTEROID_SIZE;
+            renderTextureSpin(renderer, asteroidTextures[size - 1][asteroid.getIndex()], x, y, 2 * size * BASE_ASTEROID_SIZE, 2 * size * BASE_ASTEROID_SIZE, asteroid.getAngle());
+        }
 
         //render bullets
-        for(auto& bullet : bulletsManager) bullet.render(renderer);
+        for(auto& bullet : bulletsManager) {
+            renderTextureSpin(renderer, bulletTexture, bullet.getX() - 9, bullet.getY() - 18, 22, 40, bullet.getAngle() + 90);
+        }
 
         renderScore(renderer, font, player);
         renderTimer(renderer, font);
@@ -243,7 +272,6 @@ void game::renderTimer(SDL_Renderer* renderer, TTF_Font* font) {
     if(second.size() < 2) second = "0" + second;
     string timerToRender = minute + ":" + second;
     SDL_Color red = {255, 0, 0, 255};
-    int t = 0;
     SDL_Surface* timerSurface = TTF_RenderText_Solid(font, timerToRender.c_str(), red);
     SDL_Texture* timerTexture = SDL_CreateTextureFromSurface(renderer, timerSurface);
 

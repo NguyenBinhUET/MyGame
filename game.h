@@ -10,6 +10,7 @@
 #include"asteroid.h"
 #include"background.h"
 #include"sound.h"
+#include"helper.h"
 
 using namespace std;
 
@@ -22,11 +23,12 @@ private:
     SDL_Renderer* renderer;
 
     vector<asteroid> asteroidsManager;
+    vector<vector<SDL_Texture*>> asteroidTextures;
     int numOfAsteroids;
     int speedLevel;
 
     vector<bullet> bulletsManager;
-
+    SDL_Texture* bulletTexture;
 
     bool gameOver;
     bool running;
@@ -43,6 +45,7 @@ public:
     ~game();
     void init();
     void resetGame();
+
     void spawnAsteroid();
     void splitAsteroid(const int i);
 
@@ -68,7 +71,7 @@ public:
     bool isRunning() const {return running;};
 
     //setter
-    void setGameOver(const bool value) { gameOver = value;};
+    void setGameOver(const bool value) {gameOver = value;};
     void setRunning(const bool value) {running = value;};
 };
 

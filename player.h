@@ -8,30 +8,33 @@ private:
     float x, y;
     float angle;
     float velocityX, velocityY;
-    int width = 30, height = 30;
+    int width = 40, height = 40;
     int shield;
     int score;
+    SDL_Renderer* renderer;
+    SDL_Texture* texture;
 public:
-    Spaceship(float start_x, float start_y);
+    //init
+    Spaceship(float start_x, float start_y, SDL_Renderer* renderer);
 
     void update();
     void render(SDL_Renderer* renderer);
 
-    void setAngle(float newAngle);
-
+    //movements
     void rotateLeft(float degree);
     void rotateRight(float degree);
     void moveForward(float moveAmount);
 
-    float getX() const;
-    float getY() const;
-    int getWidth() const;
-    int getScore() const;
+    //getter
+    float getX() const {return x;};
+    float getY() const {return y;};
+    int getWidth() const {return width;};
+    int getScore() const {return score;};
+    bool hasShield() {return shield;};
 
 
     void respawn();
 
-    bool hasShield();
 
     bullet spawnBullet();
 

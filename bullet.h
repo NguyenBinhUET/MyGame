@@ -1,7 +1,7 @@
 #pragma once
 #include<SDL.h>
 #include"constant.h"
-#include<vector>
+#include"helper.h"
 
 using namespace std;
 
@@ -16,12 +16,12 @@ public:
     bullet(float startX, float startY, float startAngle, float playerVx, float playerVy);
 
     void update();
-    void render(SDL_Renderer* renderer);
 
     void kill();
 
     //getter
-    bool alive() const;
-    float getX() const;
-    float getY() const;
+    bool alive() const {return isAlive;};
+    float getX() const {return x;};
+    float getY() const {return y;};
+    float getAngle() const {return angle;};
 };

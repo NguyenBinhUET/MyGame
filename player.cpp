@@ -1,9 +1,12 @@
 #include"player.h"
 #include"constant.h"
+#include"helper.h"
 #include<cmath>
 
-Spaceship::Spaceship(float start_x, float start_y)
-    :x(start_x), y(start_y), angle(0), velocityX(0), velocityY(0), shield(0), score(0) {}
+Spaceship::Spaceship(float start_x, float start_y, SDL_Renderer* renderer)
+    :x(start_x), y(start_y), angle(-90), velocityX(0), velocityY(0), shield(0), score(0), renderer(renderer) {
+        texture = loadTexture(renderer,"textures/Ship_1.png");
+    }
 
 void Spaceship::update() {
 
@@ -29,33 +32,16 @@ void Spaceship::update() {
 }
 
 void Spaceship::render(SDL_Renderer* renderer) {
-// Draw spaceship as a triangle
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-
-    float radians = angle * M_PI / 180.0f;
-
-    SDL_Point points[4];
-    points[0] = { (int)(x + cos(radians) * width / 2),
-                  (int)(y + sin(radians) * height / 2) }; // Nose
-    points[1] = { (int)(x + cos(radians + BASE_PLAYER_ANGLE) * width / 2),
-                  (int)(y + sin(radians + BASE_PLAYER_ANGLE) * height / 2) }; // Left wing
-    points[2] = { (int)(x + cos(radians - BASE_PLAYER_ANGLE) * width / 2),
-                  (int)(y + sin(radians - BASE_PLAYER_ANGLE) * height / 2) }; // Right wing
-    points[3] = points[0];
-
-    SDL_RenderDrawLines(renderer, points, 4);
+    renderTextureSpin(renderer, texture, x - width / 2, y - height / 2, width + 5, height + 5, angle + 90);
 }
 
-void Spaceship::setAngle(float newAngle) {
-    angle = newAngle;
-}
 
 void Spaceship::rotateLeft(float degree) {
-    setAngle(angle - degree);
+    angle -= degree;
 }
 
 void Spaceship::rotateRight(float degree) {
-    setAngle(angle + degree);
+    angle += degree;
 }
 
 void Spaceship::moveForward(float moveAmount) {
@@ -64,26 +50,10 @@ void Spaceship::moveForward(float moveAmount) {
     velocityY += sin(radians) * moveAmount;
 }
 
-float Spaceship::getX() const {
-    return x;
-}
-
-float Spaceship::getY() const {
-    return y;
-}
-
-int Spaceship::getWidth() const {
-    return width;
-}
-
 void Spaceship::respawn() {
     x = SCREEN_WIDTH / 2, y = SCREEN_HEIGHT / 2;
     velocityX = 0, velocityY = 0;
     shield = SHIELD_TIME;
-}
-
-bool Spaceship::hasShield() {
-    return shield;
 }
 
 bullet Spaceship::spawnBullet() {
@@ -93,10 +63,6 @@ bullet Spaceship::spawnBullet() {
 
 void Spaceship::resetScore() {
     score = 0;
-}
-
-int Spaceship::getScore() const {
-    return score;
 }
 
 void Spaceship::addScore(const int amount) {
