@@ -35,6 +35,12 @@ void Spaceship::render(SDL_Renderer* renderer) {
     renderTextureSpin(renderer, texture, x - width / 2, y - height / 2, width + 5, height + 5, angle + 90);
 }
 
+void Spaceship::renderLives(SDL_Renderer* renderer, const int lives) {
+    for(int i = 0; i < lives; i++) {
+        renderTexture(renderer, texture, 10 + i * 35, 60, 30, 30);
+    }
+}
+
 
 void Spaceship::rotateLeft(float degree) {
     angle -= degree;

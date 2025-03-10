@@ -6,4 +6,3 @@
 SDL_Texture* loadTexture(SDL_Renderer* renderer, const std::string& filePath);
 void renderTexture(SDL_Renderer* renderer, SDL_Texture* texture, int x, int y, int width, int height);
 void renderTextureSpin(SDL_Renderer* renderer, SDL_Texture* texture, int x, int y, int w, int h, float angle);
-

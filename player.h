@@ -19,6 +19,7 @@ public:
 
     void update();
     void render(SDL_Renderer* renderer);
+    void renderLives(SDL_Renderer* renderer, const int lives);
 
     //movements
     void rotateLeft(float degree);

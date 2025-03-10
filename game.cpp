@@ -70,9 +70,12 @@ void game::handleInputHold(const Uint8* keystate) {
             player.moveForward(BASE_SPEED);
         }
     }
-    if(keystate[SDL_SCANCODE_SPACE] && gameOver) {
+    else SDL_Delay(200);
+
+    if(keystate[SDL_SCANCODE_TAB] && gameOver) {
         resetGame();
     }
+
     if(keystate[SDL_SCANCODE_UP]) {
         if(!thrusting) {
             Sound.playFadeIn("thrust.ogg", -1, 8, 7, 300);
@@ -190,8 +193,10 @@ void game::render() {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
+
+    Background.render();
+
     if (!gameOver) {
-        Background.render();
         player.render(renderer);
         //render asteroids
         for(auto& asteroid : asteroidsManager) {
@@ -206,11 +211,16 @@ void game::render() {
 
         renderScore(renderer, font, player);
         renderTimer(renderer, font);
+        player.renderLives(renderer, lives);
     }
-    else renderGameOver(renderer, font, player.getScore());
+    else {
+        renderDarkBackground();
+        renderGameOver(renderer, font, player.getScore());
+    }
 
     SDL_RenderPresent(renderer);
 }
+
 
 void game::renderScore(SDL_Renderer* renderer, TTF_Font* font, Spaceship& player) {
     std::string s = "Score: " + std::to_string(player.getScore());
@@ -224,8 +234,8 @@ void game::renderScore(SDL_Renderer* renderer, TTF_Font* font, Spaceship& player
     SDL_Rect destRect;
     destRect.x = 10;
     destRect.y = 10;
-    destRect.w = surface->w;
-    destRect.h = surface->h;
+    destRect.w = surface->w * 1.5f;
+    destRect.h = surface->h * 1.5f;
 
     SDL_RenderCopy(renderer, texture, NULL, &destRect);
 
@@ -239,16 +249,18 @@ void game::renderGameOver(SDL_Renderer* renderer, TTF_Font* font, int score) {
 
     SDL_Color white = { 255, 255, 255, 255 };
 
+    //render game over text
     SDL_Surface* gameOverSurface = TTF_RenderText_Solid(font, gameOverText.c_str(), white);
     SDL_Texture* gameOverTexture = SDL_CreateTextureFromSurface(renderer, gameOverSurface);
     SDL_Rect gameOverRect;
-    gameOverRect.w = gameOverSurface->w;
-    gameOverRect.h = gameOverSurface->h;
+    gameOverRect.w = gameOverSurface->w * 2;
+    gameOverRect.h = gameOverSurface->h * 2;
     gameOverRect.x = (SCREEN_WIDTH - gameOverRect.w) / 2;
     gameOverRect.y = (SCREEN_HEIGHT - gameOverRect.h) / 2 - 50;
 
     SDL_RenderCopy(renderer, gameOverTexture, NULL, &gameOverRect);
 
+    //render score
     SDL_Surface* scoreSurface = TTF_RenderText_Solid(font, scoreText.c_str(), white);
     SDL_Texture* scoreTexture = SDL_CreateTextureFromSurface(renderer, scoreSurface);
 
@@ -260,10 +272,46 @@ void game::renderGameOver(SDL_Renderer* renderer, TTF_Font* font, int score) {
 
     SDL_RenderCopy(renderer, scoreTexture, NULL, &scoreRect);
 
+    //render button
+    string buttonText = "Press [E] to exit or [TAB] to play again.";
+
+    SDL_Surface* buttonSurface = TTF_RenderText_Solid(font, buttonText.c_str(), white);
+    SDL_Texture* buttonTexture = SDL_CreateTextureFromSurface(renderer, buttonSurface);
+
+    SDL_Rect buttonRect;
+    buttonRect.w = buttonSurface->w;
+    buttonRect.h = buttonSurface->h;
+    buttonRect.x = (SCREEN_WIDTH - buttonRect.w) / 2;
+    buttonRect.y = (SCREEN_HEIGHT - buttonRect.h) / 2 + 200;
+
+    SDL_RenderCopy(renderer, buttonTexture, NULL, &buttonRect);
+
+    //render time survived
+    string minute = to_string(countedTime / 60), second = to_string(countedTime % 60);
+    if(minute.size() < 2) minute = "0" + minute;
+    if(second.size() < 2) second = "0" + second;
+    string timeSurvived = "Time: " + minute + ":" + second;
+
+    SDL_Surface* timeSurface = TTF_RenderText_Solid(font, timeSurvived.c_str(), white);
+    SDL_Texture* timeTexture = SDL_CreateTextureFromSurface(renderer, timeSurface);
+
+    SDL_Rect timeRect;
+    timeRect.w = timeSurface->w;
+    timeRect.h = buttonSurface->h;
+    timeRect.x = (SCREEN_WIDTH - timeRect.w) / 2;
+    timeRect.y = (SCREEN_HEIGHT - timeRect.h) / 2 + 100;
+
+    SDL_RenderCopy(renderer, timeTexture, NULL, &timeRect);
+
     SDL_DestroyTexture(gameOverTexture);
     SDL_FreeSurface(gameOverSurface);
     SDL_DestroyTexture(scoreTexture);
     SDL_FreeSurface(scoreSurface);
+    SDL_DestroyTexture(buttonTexture);
+    SDL_FreeSurface(buttonSurface);
+    SDL_DestroyTexture(timeTexture);
+    SDL_FreeSurface(timeSurface);
+
 }
 
 void game::renderTimer(SDL_Renderer* renderer, TTF_Font* font) {
@@ -271,13 +319,13 @@ void game::renderTimer(SDL_Renderer* renderer, TTF_Font* font) {
     if(minute.size() < 2) minute = "0" + minute;
     if(second.size() < 2) second = "0" + second;
     string timerToRender = minute + ":" + second;
-    SDL_Color red = {255, 0, 0, 255};
-    SDL_Surface* timerSurface = TTF_RenderText_Solid(font, timerToRender.c_str(), red);
+    SDL_Color white = {255, 255, 255, 255};
+    SDL_Surface* timerSurface = TTF_RenderText_Solid(font, timerToRender.c_str(), white);
     SDL_Texture* timerTexture = SDL_CreateTextureFromSurface(renderer, timerSurface);
 
     SDL_Rect timerRect;
-    timerRect.w = timerSurface->w;
-    timerRect.h = timerSurface->h;
+    timerRect.w = timerSurface->w * 1.5f;
+    timerRect.h = timerSurface->h * 1.5f;
     timerRect.x = (SCREEN_WIDTH - timerRect.w - 10);
     timerRect.y = 10;
 
@@ -286,4 +334,12 @@ void game::renderTimer(SDL_Renderer* renderer, TTF_Font* font) {
     SDL_DestroyTexture(timerTexture);
     SDL_FreeSurface(timerSurface);
 
+}
+
+void game::renderDarkBackground() {
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 128);
+    SDL_Rect screenRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+    SDL_RenderFillRect(renderer, &screenRect);
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
 }

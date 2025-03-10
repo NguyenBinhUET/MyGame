@@ -64,6 +64,7 @@ public:
     void renderScore(SDL_Renderer* renderer, TTF_Font* font, Spaceship& player);
     void renderGameOver(SDL_Renderer* renderer, TTF_Font* font, int score);
     void renderTimer(SDL_Renderer* renderer, TTF_Font* font);
+    void renderDarkBackground();
 
     //getter
     bool isOverGame() const {return gameOver;};
