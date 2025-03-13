@@ -14,6 +14,7 @@ void renderTexture(SDL_Renderer* renderer, SDL_Texture* texture, int x, int y, i
     destRect.y = y;
     destRect.w = width;
     destRect.h = height;
+
     SDL_RenderCopy(renderer, texture, NULL, &destRect);
 }
 
@@ -30,3 +31,19 @@ void renderTextureSpin(SDL_Renderer* renderer, SDL_Texture* texture, int x, int 
 
     SDL_RenderCopyEx(renderer, texture, NULL, &destRect, angle, &center, SDL_FLIP_NONE);
 }
+
+/*
+void renderText(SDL_Renderer* renderer, const string& s, const int& x, const int& y, const float& size, TTF_Font* font, SDL_Color* color) {
+    SDL_Surface* textSurface = TTF_RenderText_Solid(font,  s.c_str(), color);
+    SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+    SDL_Rect textRect;
+    textRect.w = textSurface->w * size;
+    textRect.h = textSurface->h * size;
+    textRect.x = x;
+    textRect.y = y;
+    SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
+
+    SDL_DestroyTexture(textTexture);
+    SDL_FreeSurface(textSurface);
+}
+*/

@@ -11,14 +11,16 @@ private:
     int width = 40, height = 40;
     int shield;
     int score;
-    SDL_Renderer* renderer;
     SDL_Texture* texture;
+    SDL_Texture* fireTexture;
+    SDL_Texture* shieldTexture;
+    SDL_Renderer* renderer;
 public:
     //init
     Spaceship(float start_x, float start_y, SDL_Renderer* renderer);
 
     void update();
-    void render(SDL_Renderer* renderer);
+    void render(SDL_Renderer* renderer, const bool& thrusting);
     void renderLives(SDL_Renderer* renderer, const int lives);
 
     //movements

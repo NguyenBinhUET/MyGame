@@ -22,7 +22,6 @@ TTF_Font* font = nullptr;
 
 void gameLoop(game Game) {
     Game.init();
-    Game.resetGame();
     SDL_Event event;
     const Uint8* keystate = SDL_GetKeyboardState(NULL);
     while(Game.isRunning()) {
@@ -33,7 +32,6 @@ void gameLoop(game Game) {
         Game.handleInputHold(keystate);
         Game.update();
         // Render everything
-
         Game.render();
         SDL_Delay(16); // ~60 FPS
     }

@@ -32,6 +32,7 @@ private:
 
     bool gameOver;
     bool running;
+    bool inMenu;
     bool spacePressed = 0, thrusting = 0;
 
     int lives;
@@ -65,11 +66,13 @@ public:
     void renderGameOver(SDL_Renderer* renderer, TTF_Font* font, int score);
     void renderTimer(SDL_Renderer* renderer, TTF_Font* font);
     void renderDarkBackground();
+    void renderStartMenu();
 
     //getter
     bool isOverGame() const {return gameOver;};
     int getScore() const { return player.getScore();};
     bool isRunning() const {return running;};
+    bool isInMenu() const {return inMenu;};
 
     //setter
     void setGameOver(const bool value) {gameOver = value;};

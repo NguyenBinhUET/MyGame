@@ -5,7 +5,9 @@
 
 Spaceship::Spaceship(float start_x, float start_y, SDL_Renderer* renderer)
     :x(start_x), y(start_y), angle(-90), velocityX(0), velocityY(0), shield(0), score(0), renderer(renderer) {
-        texture = loadTexture(renderer,"textures/Ship_1.png");
+        texture = loadTexture(renderer, "textures/Ship_1.png");
+        fireTexture = loadTexture(renderer, "textures/fire.png");
+        shieldTexture = loadTexture(renderer, "textures/shield1.png");
     }
 
 void Spaceship::update() {
@@ -31,8 +33,19 @@ void Spaceship::update() {
 
 }
 
-void Spaceship::render(SDL_Renderer* renderer) {
+void Spaceship::render(SDL_Renderer* renderer, const bool& thrusting) {
+    //render thrust
+    if(thrusting) {
+        float radians = angle * M_PI / 180.0f;
+        float backX = x - cos(radians) * (height / 2);
+        float backY = y - sin(radians) * (height / 2);
+        SDL_Rect fireRect = {(int)backX - 5, (int)backY - 14, 14, 28};
+        SDL_RenderCopyEx(renderer, fireTexture, NULL, &fireRect, angle + 90, NULL, SDL_FLIP_NONE);
+    }
+    //render player
     renderTextureSpin(renderer, texture, x - width / 2, y - height / 2, width + 5, height + 5, angle + 90);
+    //render shield
+    if(shield) renderTexture(renderer, shieldTexture, x - width / 2 - 10, y - height / 2 - 10, width + 25, height + 25);
 }
 
 void Spaceship::renderLives(SDL_Renderer* renderer, const int lives) {

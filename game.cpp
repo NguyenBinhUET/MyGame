@@ -23,6 +23,8 @@ void game::init() {
     running = 1;
     numOfAsteroids = START_ASTEROIDS;
     speedLevel = 1;
+    inMenu = 1;
+    gameOver = 0;
 
     //load asteroid textures
     for(int i = 0; i < 3; i++) {
@@ -40,7 +42,7 @@ void game::init() {
     bulletTexture = loadTexture(renderer, "textures/beam1.png");
 
     Sound.loadAllSound();
-    Sound.play("space-station.ogg", -1, 8, -1);
+    Sound.play("space-station.ogg", -1, 16, -1);
 }
 
 void game::resetGame() {
@@ -63,44 +65,48 @@ void game::resetGame() {
 }
 
 void game::handleInputHold(const Uint8* keystate) {
-    if(!gameOver) {
+    if(!gameOver && !inMenu) {
         if(keystate[SDL_SCANCODE_LEFT]) player.rotateLeft(BASE_ROTATE);
         if(keystate[SDL_SCANCODE_RIGHT]) player.rotateRight(BASE_ROTATE);
         if(keystate[SDL_SCANCODE_UP]) {
             player.moveForward(BASE_SPEED);
         }
-    }
-    else SDL_Delay(200);
-
-    if(keystate[SDL_SCANCODE_TAB] && gameOver) {
-        resetGame();
-    }
-
-    if(keystate[SDL_SCANCODE_UP]) {
-        if(!thrusting) {
-            Sound.playFadeIn("thrust.ogg", -1, 8, 7, 300);
-            thrusting = 1;
+        if(keystate[SDL_SCANCODE_UP]) {
+            if(!thrusting && !gameOver) {
+                Sound.playFadeIn("thrust.ogg", -1, 16, 7, 300);
+                thrusting = 1;
+            }
+        }
+        else if(thrusting || gameOver) {
+            Mix_FadeOutChannel(7, 300);
+            thrusting = 0;
         }
     }
-    else if(thrusting) {
-        Mix_FadeOutChannel(7, 300);
-        thrusting = 0;
+    else if(gameOver) {
+        if(keystate[SDL_SCANCODE_TAB]) {
+            resetGame();
+        }
+        if(keystate[SDL_SCANCODE_E]) {
+            running = 0;
+        }
     }
-    if(keystate[SDL_SCANCODE_E] && gameOver) {
-        running = 0;
-    }
+
 }
 
 void game::handleInputTap(const SDL_Event& event) {
     if(event.type == SDL_KEYDOWN)
     switch(event.key.keysym.sym) {
-        case SDLK_SPACE: {
-            if(!spacePressed) {
+        case SDLK_SPACE:
+            if(!spacePressed && !gameOver && !inMenu) {
                 bulletsManager.push_back(player.spawnBullet());
                 spacePressed = 1;
-                Sound.play("shoot-laser.ogg", 0, 8, -1);
+                Sound.play("shoot-laser.ogg", 0, 16, -1);
             }
-        }
+            break;
+        case SDLK_RETURN:
+            if(inMenu) resetGame();
+            inMenu = 0;
+            break;
     }
     if(event.type == SDL_KEYUP) {
         if(spacePressed) spacePressed = 0;
@@ -114,6 +120,7 @@ void game::update() {
         countedTime = (currentTime - startTime) / 1000; // to second
 
         Background.update(0.016f);
+
         player.update();
         if(asteroidsManager.size() == 0) {
             numOfAsteroids = min(MAX_ASTEROIDS, START_ASTEROIDS + countedTime / 30);
@@ -123,9 +130,9 @@ void game::update() {
         for(int i = asteroidsManager.size() - 1; i >= 0; i--) {
             //update asteroids
             asteroidsManager[i].update();
-            if (checkCollision1(player, asteroidsManager[i])) {
+            if (!player.hasShield() && checkCollision1(player, asteroidsManager[i]) && !inMenu) {
                 lives--;
-                Sound.play("ship-explosion.ogg", 0, 32, -1);
+                Sound.play("ship-explosion.ogg", 0, 48, -1);
                 if (lives <= 0) {
                     gameOver = true;
                 } else player.respawn();
@@ -169,11 +176,11 @@ void game::spawnAsteroid() {
     for(int i = 0; i < numOfAsteroids; i++) {
         int f = rand() % 2;
         if(f) {
-            asteroid newAsteroid = {0, rand() % SCREEN_HEIGHT + 0.0f, (rand() % 2 + 2), 1};
+            asteroid newAsteroid = {0, rand() % SCREEN_HEIGHT + 0.0f, (rand() % 2 + 2), speedLevel};
             asteroidsManager.push_back(newAsteroid);
         }
         else {
-            asteroid newAsteroid = {rand() % SCREEN_WIDTH + 0.0f, 0, (rand() % 2 + 2), 1};
+            asteroid newAsteroid = {rand() % SCREEN_WIDTH + 0.0f, 0, (rand() % 2 + 2), speedLevel};
             asteroidsManager.push_back(newAsteroid);
         }
     }
@@ -195,9 +202,16 @@ void game::render() {
 
 
     Background.render();
-
+    if(inMenu) {
+        renderStartMenu();
+    }
     if (!gameOver) {
-        player.render(renderer);
+        if(!inMenu) {
+            player.render(renderer, thrusting);
+            renderScore(renderer, font, player);
+            renderTimer(renderer, font);
+            player.renderLives(renderer, lives);
+        }
         //render asteroids
         for(auto& asteroid : asteroidsManager) {
             int size = asteroid.getSize(), x = asteroid.getX() - size * BASE_ASTEROID_SIZE , y = asteroid.getY() -  size * BASE_ASTEROID_SIZE;
@@ -209,9 +223,6 @@ void game::render() {
             renderTextureSpin(renderer, bulletTexture, bullet.getX() - 9, bullet.getY() - 18, 22, 40, bullet.getAngle() + 90);
         }
 
-        renderScore(renderer, font, player);
-        renderTimer(renderer, font);
-        player.renderLives(renderer, lives);
     }
     else {
         renderDarkBackground();
@@ -225,22 +236,28 @@ void game::render() {
 void game::renderScore(SDL_Renderer* renderer, TTF_Font* font, Spaceship& player) {
     std::string s = "Score: " + std::to_string(player.getScore());
     const char* scoreToDisplay = s.c_str();
-    SDL_Color white = { 255, 255, 255, 255 };
+    //render outline
+    SDL_Color black = {0, 0, 0, 255};
+    SDL_Surface* outlineSurface = TTF_RenderText_Solid(font, scoreToDisplay, black);
+    SDL_Texture* outlineTexture = SDL_CreateTextureFromSurface(renderer, outlineSurface);
+    SDL_Rect outlineDestRect = {10, 10, (int)(outlineSurface->w * 1.5f) + 5, (int)(outlineSurface->h * 1.5f) + 5};
+    SDL_RenderCopy(renderer, outlineTexture, NULL, &outlineDestRect);
 
+    //render score
+    SDL_Color white = {255, 255, 255, 255 };
     SDL_Surface* surface = TTF_RenderText_Solid(font, scoreToDisplay, white);
-
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-
-    SDL_Rect destRect;
-    destRect.x = 10;
-    destRect.y = 10;
-    destRect.w = surface->w * 1.5f;
-    destRect.h = surface->h * 1.5f;
-
+    SDL_Rect destRect = {10, 10, (int)(surface->w * 1.5f), (int)(surface->h * 1.5f)};
     SDL_RenderCopy(renderer, texture, NULL, &destRect);
+
+
+
+
 
     SDL_DestroyTexture(texture);
     SDL_FreeSurface(surface);
+    SDL_DestroyTexture(outlineTexture);
+    SDL_FreeSurface(outlineSurface);
 }
 
 void game::renderGameOver(SDL_Renderer* renderer, TTF_Font* font, int score) {
@@ -319,6 +336,20 @@ void game::renderTimer(SDL_Renderer* renderer, TTF_Font* font) {
     if(minute.size() < 2) minute = "0" + minute;
     if(second.size() < 2) second = "0" + second;
     string timerToRender = minute + ":" + second;
+
+    //render outline
+    SDL_Color black = {0, 0, 0, 255};
+    SDL_Surface* outlineSurface = TTF_RenderText_Solid(font, timerToRender.c_str(), black);
+    SDL_Texture* outlineTexture = SDL_CreateTextureFromSurface(renderer, outlineSurface);
+    SDL_Rect outlineDestRect;
+    outlineDestRect.w = outlineSurface->w * 1.5f - 5;
+    outlineDestRect.h = outlineSurface->h * 1.5f + 5;
+    outlineDestRect.x = SCREEN_WIDTH - outlineDestRect.w - 10;
+    outlineDestRect.y = 10;
+    SDL_RenderCopy(renderer, outlineTexture, NULL, &outlineDestRect);
+
+
+    //render timer
     SDL_Color white = {255, 255, 255, 255};
     SDL_Surface* timerSurface = TTF_RenderText_Solid(font, timerToRender.c_str(), white);
     SDL_Texture* timerTexture = SDL_CreateTextureFromSurface(renderer, timerSurface);
@@ -326,13 +357,14 @@ void game::renderTimer(SDL_Renderer* renderer, TTF_Font* font) {
     SDL_Rect timerRect;
     timerRect.w = timerSurface->w * 1.5f;
     timerRect.h = timerSurface->h * 1.5f;
-    timerRect.x = (SCREEN_WIDTH - timerRect.w - 10);
+    timerRect.x = SCREEN_WIDTH - timerRect.w - 10;
     timerRect.y = 10;
-
     SDL_RenderCopy(renderer, timerTexture, NULL, &timerRect);
 
     SDL_DestroyTexture(timerTexture);
     SDL_FreeSurface(timerSurface);
+    SDL_DestroyTexture(outlineTexture);
+    SDL_FreeSurface(outlineSurface);
 
 }
 
@@ -342,4 +374,54 @@ void game::renderDarkBackground() {
     SDL_Rect screenRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     SDL_RenderFillRect(renderer, &screenRect);
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+}
+
+void game::renderStartMenu() {
+    SDL_Color white = { 255, 255, 255, 255 };
+
+    string nameText = "ASTEROIDS DESTROYER";
+
+    SDL_Surface* nameSurface = TTF_RenderText_Solid(font, nameText.c_str(), white);
+    SDL_Texture* nameTexture = SDL_CreateTextureFromSurface(renderer, nameSurface);
+
+    SDL_Rect nameRect;
+    nameRect.w = nameSurface->w * 2;
+    nameRect.h = nameSurface->h * 2;
+    nameRect.x = (SCREEN_WIDTH - nameRect.w) / 2;
+    nameRect.y = (SCREEN_HEIGHT - nameRect.h) / 2 - 100;
+
+    SDL_RenderCopy(renderer, nameTexture, NULL, &nameRect);
+
+    string buttonText = "Press [SPACE] to shoot, move with [LEFT] [UP] [RIGHT]";
+
+    SDL_Surface* buttonSurface = TTF_RenderText_Solid(font, buttonText.c_str(), white);
+    SDL_Texture* buttonTexture = SDL_CreateTextureFromSurface(renderer, buttonSurface);
+
+    SDL_Rect buttonRect;
+    buttonRect.w = buttonSurface->w;
+    buttonRect.h = buttonSurface->h;
+    buttonRect.x = (SCREEN_WIDTH - buttonRect.w) / 2;
+    buttonRect.y = (SCREEN_HEIGHT - buttonRect.h) / 2 + 100;
+
+    SDL_RenderCopy(renderer, buttonTexture, NULL, &buttonRect);
+
+    string playText = "Press [ENTER] to play!";
+
+    SDL_Surface* playSurface = TTF_RenderText_Solid(font, playText.c_str(), white);
+    SDL_Texture* playTexture = SDL_CreateTextureFromSurface(renderer, playSurface);
+
+    SDL_Rect playRect;
+    playRect.w = playSurface->w;
+    playRect.h = playSurface->h;
+    playRect.x = (SCREEN_WIDTH - playRect.w) / 2;
+    playRect.y = (SCREEN_HEIGHT - playRect.h) / 2 + 200;
+
+    SDL_RenderCopy(renderer, playTexture, NULL, &playRect);
+
+    SDL_DestroyTexture(nameTexture);
+    SDL_FreeSurface(nameSurface);
+    SDL_DestroyTexture(playTexture);
+    SDL_FreeSurface(playSurface);
+    SDL_DestroyTexture(buttonTexture);
+    SDL_FreeSurface(buttonSurface);
 }
