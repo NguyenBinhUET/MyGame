@@ -8,19 +8,17 @@ using namespace std;
 class bullet {
 private:
     float x, y;
-    float velocityX = 0, velocityY = 0, angle;
+    float velocityX, velocityY, angle;
     int lifeTime = BULLET_LIFE_TIME;
-    bool isAlive = 1;
+    bool alive;
 public:
     //init
-    bullet(float startX, float startY, float startAngle, float playerVx, float playerVy);
+    bullet(float _x, float _y, float _angle, float playerVx, float playerVy);
 
     void update();
 
-    void kill();
-
     //getter
-    bool alive() const {return isAlive;};
+    bool isAlive() const {return alive;};
     float getX() const {return x;};
     float getY() const {return y;};
     float getAngle() const {return angle;};

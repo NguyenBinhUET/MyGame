@@ -16,8 +16,8 @@ background::~background() {
     }
 }
 
-void background::update(float deltaTime) {
-    scrollX -= scrollSpeed * deltaTime;
+void background::update() {
+    scrollX -= scrollSpeed * 0.016f;
 
     SDL_QueryTexture(texture, NULL, NULL, &backgroundWidth, &backgroundHeight);
 

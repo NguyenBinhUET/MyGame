@@ -20,7 +20,7 @@ SDL_Window* window = nullptr;
 SDL_Renderer* renderer = nullptr;
 TTF_Font* font = nullptr;
 
-void gameLoop(game Game) {
+void gameLoop(game& Game) {
     Game.init();
     SDL_Event event;
     const Uint8* keystate = SDL_GetKeyboardState(NULL);
@@ -40,9 +40,9 @@ void gameLoop(game Game) {
 
 int main(int argc, char* argv[]) {
 
-    if(SDL_Init(SDL_INIT_VIDEO) != 0) cout << "SDL_Init failed. ERROR: " << SDL_GetError() << "\n";
-    if(IMG_Init(IMG_INIT_PNG) == 0) cout << "IMG_Init failed. ERROR: " << SDL_GetError() << "\n";
-    if(TTF_Init() == -1) cout << "TTF_Init failed. ERROR: " << SDL_GetError() << "\n";
+    if(SDL_Init(SDL_INIT_VIDEO) < 0) cout << "SDL_Init failed. ERROR: " << SDL_GetError() << "\n";
+    if(IMG_Init(IMG_INIT_PNG) < 0) cout << "IMG_Init failed. ERROR: " << SDL_GetError() << "\n";
+    if(TTF_Init() < 0) cout << "TTF_Init failed. ERROR: " << SDL_GetError() << "\n";
     if(SDL_Init(SDL_INIT_AUDIO) < 0) cout << "SDL_Init failed. ERROR: " << SDL_GetError() << "\n";
     if(Mix_Init(MIX_INIT_OGG) != MIX_INIT_OGG) cout << "SDL_Mixer failed. ERROR: " << SDL_GetError() << "\n";
 

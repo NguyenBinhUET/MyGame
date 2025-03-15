@@ -13,7 +13,7 @@ private:
     int textureIndex;
 public:
     //init
-    asteroid(float start_X, float start_Y, int start_Size, int start_speedLevel);
+    asteroid(float _x, float _y, int _size, int _speedLevel);
 
     void update();
     void render(SDL_Renderer* renderer);

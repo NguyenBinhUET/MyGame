@@ -3,8 +3,8 @@
 #include"constant.h"
 
 
-asteroid::asteroid(float start_X, float start_Y, int start_Size, int start_speedLevel)
-    :x(start_X), y(start_Y), angle(0.0f), rotationSpeed(rand() % 3 - 1), size(start_Size), speedLevel(start_speedLevel), textureIndex(rand() % 3)  {
+asteroid::asteroid(float _x, float _y, int _size, int _speedLevel)
+    :x(_x), y(_y), angle(0.0f), rotationSpeed(rand() % 3 - 1), size(_size), speedLevel(_speedLevel), textureIndex(rand() % 3)  {
     if(size == 3) {
         velocityX = (rand() % 3 - 1) * (0.7f + speedLevel * 0.05f);
         velocityY = (rand() % 3 - 1) * (0.7f + speedLevel * 0.05f);

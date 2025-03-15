@@ -3,8 +3,8 @@
 #include"helper.h"
 #include<cmath>
 
-Spaceship::Spaceship(float start_x, float start_y, SDL_Renderer* renderer)
-    :x(start_x), y(start_y), angle(-90), velocityX(0), velocityY(0), shield(0), score(0), renderer(renderer) {
+Spaceship::Spaceship( SDL_Renderer* renderer, float _x, float _y)
+    :x(_x), y(_y), angle(-90), velocityX(0), velocityY(0), shield(0), score(0), renderer(renderer) {
         texture = loadTexture(renderer, "textures/Ship_1.png");
         fireTexture = loadTexture(renderer, "textures/fire.png");
         shieldTexture = loadTexture(renderer, "textures/shield1.png");
@@ -50,7 +50,7 @@ void Spaceship::render(SDL_Renderer* renderer, const bool& thrusting) {
 
 void Spaceship::renderLives(SDL_Renderer* renderer, const int lives) {
     for(int i = 0; i < lives; i++) {
-        renderTexture(renderer, texture, 10 + i * 35, 60, 30, 30);
+        renderTexture(renderer, texture, 10 + i * 40, 50, 35, 35);
     }
 }
 

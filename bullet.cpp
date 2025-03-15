@@ -2,7 +2,8 @@
 #include"bullet.h"
 #include<cmath>
 
-bullet::bullet(float startX, float startY, float startAngle, float playerVx, float playerVy) :x(startX), y(startY), angle(startAngle) {
+bullet::bullet(float _x, float _y, float _angle, float playerVx, float playerVy)
+    :x(_x), y(_y), velocityX(0.0f), velocityY(0.0f), angle(_angle), alive(1) {
     float radian = angle * M_PI / 180.0f;
     velocityX = cos(radian) * BULLET_SPEED + playerVx;
     velocityY = sin(radian) * BULLET_SPEED + playerVy;
@@ -19,10 +20,6 @@ void bullet::update() {
     if(y < 0) y = SCREEN_HEIGHT;
     if(y > SCREEN_HEIGHT) y = 0;
     lifeTime--;
-    if(lifeTime == 0) isAlive = 0;
-}
-
-void bullet::kill() {
-    isAlive = 0;
+    if(lifeTime == 0) alive = 0;
 }
 

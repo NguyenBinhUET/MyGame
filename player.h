@@ -17,7 +17,7 @@ private:
     SDL_Renderer* renderer;
 public:
     //init
-    Spaceship(float start_x, float start_y, SDL_Renderer* renderer);
+    Spaceship(SDL_Renderer* renderer, float _x, float _y);
 
     void update();
     void render(SDL_Renderer* renderer, const bool& thrusting);

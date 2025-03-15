@@ -8,6 +8,7 @@
 #include"constant.h"
 #include"bullet.h"
 #include"asteroid.h"
+#include"explosion.h"
 #include"background.h"
 #include"sound.h"
 #include"helper.h"
@@ -29,6 +30,9 @@ private:
 
     vector<bullet> bulletsManager;
     SDL_Texture* bulletTexture;
+
+    vector<explosion> explosionsManager;
+    SDL_Texture* explosionFrames;
 
     bool gameOver;
     bool running;

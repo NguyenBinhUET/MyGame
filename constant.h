@@ -10,7 +10,7 @@ const float FRICTION = 0.025f;
 const float MAX_SPEED = 8.0f;
 
 const float BULLET_SPEED = 10.0f;
-const int BULLET_LIFE_TIME = 50;
+const int BULLET_LIFE_TIME = 75;
 const int BULLET_SIZE = 5;
 
 const int SHIELD_TIME = 100;
@@ -25,3 +25,5 @@ const int START_SPEED_LEVEL = 0;
 const int MAX_SPEED_LEVEL = 12;
 
 const float SCROLL_SPEED = 50.0f;
+
+const float EXPLOSION_FRAME_DURATION = 0.03f;
