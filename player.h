@@ -8,9 +8,9 @@ private:
     float x, y;
     float angle;
     float velocityX, velocityY;
-    int width = 40, height = 40;
+    int width = PLAYER_SIZE, height = PLAYER_SIZE;
     int shield;
-    int score;
+    unsigned long score;
     SDL_Texture* texture;
     SDL_Texture* fireTexture;
     SDL_Texture* shieldTexture;
@@ -32,7 +32,7 @@ public:
     float getX() const {return x;};
     float getY() const {return y;};
     int getWidth() const {return width;};
-    int getScore() const {return score;};
+    unsigned long getScore() const {return score;};
     bool hasShield() {return shield;};
 
 

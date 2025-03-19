@@ -56,14 +56,15 @@ int main(int argc, char* argv[]) {
     font = TTF_OpenFont("fonts/Nasa21.ttf", SCORE_FONT_SIZE);
     if(!font) cout << "TTF_OpenFont failed. ERROR: " << TTF_GetError() << "\n";
 
-    game Game(renderer, font);
     srand(time(0));
+    game Game(renderer, font);
     gameLoop(Game);
 
-    Mix_CloseAudio();
-    TTF_Quit();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    IMG_Quit();
     SDL_Quit();
+    TTF_Quit();
+    Mix_CloseAudio();
     return 0;
 }

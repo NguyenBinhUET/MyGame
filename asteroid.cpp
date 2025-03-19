@@ -6,16 +6,16 @@
 asteroid::asteroid(float _x, float _y, int _size, int _speedLevel)
     :x(_x), y(_y), angle(0.0f), rotationSpeed(rand() % 3 - 1), size(_size), speedLevel(_speedLevel), textureIndex(rand() % 3)  {
     if(size == 3) {
-        velocityX = (rand() % 3 - 1) * (0.7f + speedLevel * 0.05f);
-        velocityY = (rand() % 3 - 1) * (0.7f + speedLevel * 0.05f);
+        velocityX = (rand() % 3 - 1) * (1.0f + speedLevel * 0.1f);
+        velocityY = (rand() % 3 - 1) * (1.0f + speedLevel * 0.1f);
     }
     else if(size == 2) {
-        velocityX = (rand() % 5 - 2) * (0.7f + speedLevel * 0.05f);
-        velocityY = (rand() % 5 - 2) * (0.7F + speedLevel * 0.05f);
+        velocityX = (rand() % 5 - 2) * (1.0f + speedLevel * 0.1f);
+        velocityY = (rand() % 5 - 2) * (1.0F + speedLevel * 0.1f);
     }
     else {
-        velocityX = (rand() % 7 - 3) * (0.7f + speedLevel * 0.05f);
-        velocityY = (rand() % 7 - 3) * (0.7f + speedLevel * 0.05f);
+        velocityX = (rand() % 5 - 2) * (1.5f + speedLevel * 0.1f);
+        velocityY = (rand() % 5 - 2) * (1.5f + speedLevel * 0.1f);
     }
     if(velocityX == 0 && velocityY == 0) {
         velocityX = rand() % 5 + 1;

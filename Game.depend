@@ -45,7 +45,7 @@
 	<SDL.h>
 	"constant.h"
 
-1742052115 source:c:\users\admin\advanceprograming\game\mygame\asteroid.cpp
+1742314368 source:c:\users\admin\advanceprograming\game\mygame\asteroid.cpp
 	<SDL.h>
 	"asteroid.h"
 	"constant.h"
@@ -53,7 +53,7 @@
 1742052194 c:\users\admin\advanceprograming\game\mygame\asteroid.h
 	<vector>
 
-1742050128 c:\users\admin\advanceprograming\game\mygame\constant.h
+1742395889 c:\users\admin\advanceprograming\game\mygame\constant.h
 
 1742051137 source:c:\users\admin\advanceprograming\game\mygame\bullet.cpp
 	"constant.h"
@@ -71,12 +71,12 @@
 	"helper.h"
 	<cmath>
 
-1742052225 c:\users\admin\advanceprograming\game\mygame\player.h
+1742394002 c:\users\admin\advanceprograming\game\mygame\player.h
 	"constant.h"
 	"bullet.h"
 	<SDL.h>
 
-1742052104 source:c:\users\admin\advanceprograming\game\mygame\main.cpp
+1742399901 source:c:\users\admin\advanceprograming\game\mygame\main.cpp
 	<iostream>
 	<string>
 	<vector>
@@ -92,7 +92,7 @@
 	"asteroid.h"
 	"game.h"
 
-1742052465 c:\users\admin\advanceprograming\game\mygame\game.h
+1742394018 c:\users\admin\advanceprograming\game\mygame\game.h
 	<SDL.h>
 	<SDL_ttf.h>
 	<SDL_image.h>
@@ -102,12 +102,13 @@
 	"constant.h"
 	"bullet.h"
 	"asteroid.h"
+	"UFO.h"
 	"explosion.h"
 	"background.h"
 	"sound.h"
 	"helper.h"
 
-1742052405 source:c:\users\admin\advanceprograming\game\mygame\game.cpp
+1742399245 source:c:\users\admin\advanceprograming\game\mygame\game.cpp
 	"game.h"
 	<iostream>
 	<cmath>
@@ -149,12 +150,13 @@
 	<SDL.h>
 	<vector>
 
-1741710560 source:c:\users\admin\advanceprograming\game\mygame\button.cpp
+1742313316 source:c:\users\admin\advanceprograming\game\mygame\button.cpp
 	"button.h"
 	"helper.h"
 
-1741710560 c:\users\admin\advanceprograming\game\mygame\button.h
+1742313240 c:\users\admin\advanceprograming\game\mygame\button.h
 	<SDL.h>
+	<string>
 
 1742050001 c:\users\admin\advanceprograming\game\mygame\explosion.h
 	<SDL.h>
@@ -163,4 +165,13 @@
 1742050156 source:c:\users\admin\advanceprograming\game\mygame\explosion.cpp
 	"explosion.h"
 	"constant.h"
+
+1742383480 source:c:\users\admin\advanceprograming\game\mygame\ufo.cpp
+	"UFO.h"
+	<cmath>
+
+1742380527 c:\users\admin\advanceprograming\game\mygame\ufo.h
+	"constant.h"
+	"bullet.h"
+	<SDL.h>
 

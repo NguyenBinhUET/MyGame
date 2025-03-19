@@ -42,6 +42,8 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="UFO.cpp" />
+		<Unit filename="UFO.h" />
 		<Unit filename="asteroid.cpp" />
 		<Unit filename="asteroid.h" />
 		<Unit filename="background.cpp" />

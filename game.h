@@ -1,13 +1,16 @@
 #pragma once
+
 #include<SDL.h>
 #include<SDL_ttf.h>
 #include<SDL_image.h>
 #include<vector>
 #include<string>
+
 #include"player.h"
 #include"constant.h"
 #include"bullet.h"
 #include"asteroid.h"
+#include"UFO.h"
 #include"explosion.h"
 #include"background.h"
 #include"sound.h"
@@ -23,6 +26,9 @@ private:
     TTF_Font* font;
     SDL_Renderer* renderer;
 
+    vector<UFO> ufosManager;
+    SDL_Texture* ufoTexture;
+
     vector<asteroid> asteroidsManager;
     vector<vector<SDL_Texture*>> asteroidTextures;
     int numOfAsteroids;
@@ -31,14 +37,20 @@ private:
     vector<bullet> bulletsManager;
     SDL_Texture* bulletTexture;
 
+    vector<bullet> ufoBulletsManager;
+    SDL_Texture* ufoBulletTexture;
+
     vector<explosion> explosionsManager;
     SDL_Texture* explosionFrames;
 
     bool gameOver;
     bool running;
     bool inMenu;
+    bool paused;
     bool spacePressed = 0, thrusting = 0;
+    bool hasUFO;
 
+    unsigned long highestScore;
     int lives;
 
     //timer
@@ -52,6 +64,7 @@ public:
     void resetGame();
 
     void spawnAsteroid();
+    void spawnUFO();
     void splitAsteroid(const int i);
 
     //handle input
@@ -63,6 +76,8 @@ public:
     //check collision
     bool checkCollision1(Spaceship& player, asteroid& Asteroid);
     bool checkCollision2(bullet& Bullet, asteroid& Asteroid);
+    bool checkCollision3(UFO& ufo, bullet& Bullet);
+    bool checkCollision4(Spaceship& player, bullet& Bullet);
 
     //render
     void render();
@@ -71,6 +86,7 @@ public:
     void renderTimer(SDL_Renderer* renderer, TTF_Font* font);
     void renderDarkBackground();
     void renderStartMenu();
+    void renderPaused();
 
     //getter
     bool isOverGame() const {return gameOver;};

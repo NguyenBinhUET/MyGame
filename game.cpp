@@ -6,9 +6,7 @@ game::game(SDL_Renderer* renderer, TTF_Font* font)
     :player(renderer, SCREEN_WIDTH/2 + 0.0f,SCREEN_HEIGHT/2 +0.0f), Background(renderer, "textures/Blue.png"), font(font), renderer(renderer) {};
 
 game::~game() {
-    if (font) {
-        TTF_CloseFont(font);
-    }
+    if(asteroidTextures.size() != 0)
     for(int i = 0; i < 3; i++) {
         for(int j = 0; j < 3; j++) {
             SDL_DestroyTexture(asteroidTextures[i][j]);
@@ -18,6 +16,8 @@ game::~game() {
 
     asteroidTextures.clear();
 
+    SDL_DestroyTexture(ufoTexture);
+    SDL_DestroyTexture(ufoBulletTexture);
     SDL_DestroyTexture(explosionFrames);
     SDL_DestroyTexture(bulletTexture);
 }
@@ -28,6 +28,9 @@ void game::init() {
     speedLevel = 1;
     inMenu = 1;
     gameOver = 0;
+    paused = 0;
+    highestScore = 0;
+    countedTime = 0;
 
     //load asteroid textures
     for(int i = 0; i < 3; i++) {
@@ -40,6 +43,12 @@ void game::init() {
         asteroidTextures.push_back(temp);
         temp.clear();
     }
+
+    //load UFO texture
+    ufoTexture = loadTexture(renderer, "textures/UFO.png");
+
+    //load ufo's bullet texture
+    ufoBulletTexture = loadTexture(renderer, "textures/beam2.png");
 
     //load bullet texture
     bulletTexture = loadTexture(renderer, "textures/beam1.png");
@@ -57,7 +66,7 @@ void game::resetGame() {
     countedTime = 0.0f;
 
     numOfAsteroids = START_ASTEROIDS;
-    speedLevel = 1;
+    speedLevel = START_SPEED_LEVEL;
 
     gameOver = false;
     lives = START_LIFE_POINT;
@@ -73,9 +82,9 @@ void game::resetGame() {
 void game::handleInputHold(const Uint8* keystate) {
     if(!gameOver && !inMenu) {
         //left, right, up
-        if(keystate[SDL_SCANCODE_LEFT]) player.rotateLeft(BASE_ROTATE);
-        if(keystate[SDL_SCANCODE_RIGHT]) player.rotateRight(BASE_ROTATE);
-        if(keystate[SDL_SCANCODE_UP]) {
+        if(keystate[SDL_SCANCODE_LEFT] && !paused) player.rotateLeft(BASE_ROTATE);
+        if(keystate[SDL_SCANCODE_RIGHT] && !paused) player.rotateRight(BASE_ROTATE);
+        if(keystate[SDL_SCANCODE_UP] && !paused) {
             player.moveForward(BASE_SPEED);
             if(!thrusting && !gameOver) {
                 Sound.playFadeIn("thrust.ogg", -1, 16, 7, 300);
@@ -87,15 +96,6 @@ void game::handleInputHold(const Uint8* keystate) {
             thrusting = 0;
         }
     }
-    else if(gameOver) {
-        if(keystate[SDL_SCANCODE_TAB]) {
-            resetGame();
-        }
-        if(keystate[SDL_SCANCODE_E]) {
-            running = 0;
-        }
-    }
-
 }
 
 void game::handleInputTap(const SDL_Event& event) {
@@ -112,6 +112,16 @@ void game::handleInputTap(const SDL_Event& event) {
             if(inMenu) resetGame();
             inMenu = 0;
             break;
+        case SDLK_ESCAPE:
+            if(paused) paused = 0;
+            else paused = 1;
+            break;
+        case SDLK_TAB:
+            if(gameOver || paused) resetGame();
+            if(paused) paused = 0;
+            break;
+        case SDLK_e:
+            if(gameOver || paused) running = 0;
     }
     if(event.type == SDL_KEYUP) {
         if(spacePressed) spacePressed = 0;
@@ -119,14 +129,17 @@ void game::handleInputTap(const SDL_Event& event) {
 }
 
 void game::update() {
-    if (!gameOver) {
+    if (!gameOver && !paused) {
         //update timer
-        Uint32 currentTime = SDL_GetTicks();
-        countedTime = (currentTime - startTime) / 1000; // to second
+        if(!inMenu) {
+            Uint32 currentTime = SDL_GetTicks();
+            countedTime = (currentTime - startTime) / 1000; // to second
+        }
 
         Background.update();
 
         player.update();
+
         if(asteroidsManager.size() == 0) {
             numOfAsteroids = min(MAX_ASTEROIDS, START_ASTEROIDS + countedTime / 30);
             speedLevel = min(MAX_SPEED_LEVEL, START_SPEED_LEVEL + countedTime / 15);
@@ -154,10 +167,22 @@ void game::update() {
             if(!bulletsManager[i].isAlive()) bulletsManager.erase(bulletsManager.begin() + i);
         }
 
-        //update explosions
-        for(int i = explosionsManager.size() - 1; i >= 0; i--) {
-            explosionsManager[i].update();
-            if(!explosionsManager[i].isAlive()) explosionsManager.erase(explosionsManager.begin() + i);
+        //update UFO's bullets
+
+        for(int i = ufoBulletsManager.size() - 1; i >= 0; i--) {
+            ufoBulletsManager[i].update();
+            if(!ufoBulletsManager[i].isAlive()) ufoBulletsManager.erase(ufoBulletsManager.begin() + i);
+            if(!player.hasShield() && checkCollision4(player, ufoBulletsManager[i])) {
+                explosion newExplosion(player.getX(), player.getY(), 100);
+                explosionsManager.push_back(newExplosion);
+
+                lives--;
+                Sound.play("ship-explosion.ogg", 0, 48, -1);
+                if (lives <= 0) {
+                    gameOver = true;
+                } else player.respawn();
+                ufoBulletsManager.erase(ufoBulletsManager.begin() + i);
+            }
         }
 
         for(int i = asteroidsManager.size() - 1; i >= 0 ; i--) {
@@ -176,6 +201,40 @@ void game::update() {
                 }
             }
         }
+
+        //update UFOs
+        for(int i = ufosManager.size() - 1; i >= 0; i--) {
+            ufosManager[i].update();
+            if(ufosManager[i].shoot()) ufoBulletsManager.push_back(ufosManager[i].spawnBullet(player.getX(), player.getY()));
+            //if(ufosManager[i].shoot()) cout << "SHOOT\n";
+        }
+        if(countedTime % 15 == 0 && !hasUFO && countedTime != 0) {
+           spawnUFO();
+           hasUFO = 1;
+        }
+        if(ufosManager.size() == 0) hasUFO = 0;
+
+        for(int i = ufosManager.size() - 1; i >= 0; i--) {
+            for(int j = bulletsManager.size() - 1; j >= 0; j--) {
+                if(checkCollision3(ufosManager[i], bulletsManager[j])) {
+                    explosion newExplosion(ufosManager[i].getX(), ufosManager[i].getY(), ufosManager[i].getSize());
+                    explosionsManager.push_back(newExplosion);
+
+                    ufosManager.erase(ufosManager.begin() + i);
+                    bulletsManager.erase(bulletsManager.begin() + j);
+                    break;
+                }
+            }
+        }
+
+        //update explosions
+        for(int i = explosionsManager.size() - 1; i >= 0; i--) {
+            explosionsManager[i].update();
+            if(!explosionsManager[i].isAlive()) explosionsManager.erase(explosionsManager.begin() + i);
+        }
+
+        //update highest score
+        if(gameOver) highestScore = max(highestScore, player.getScore());
     }
 }
 
@@ -204,6 +263,18 @@ void game::spawnAsteroid() {
     }
 }
 
+void game::spawnUFO() {
+    int f = rand() % 2;
+    if(f) {
+        UFO newUFO(0.0f, rand() % SCREEN_HEIGHT + 0.0f);
+        ufosManager.push_back(newUFO);
+    }
+    else {
+        UFO newUFO(rand() % SCREEN_WIDTH + 0.0f, 0.0f);
+        ufosManager.push_back(newUFO);
+    }
+}
+
 bool game::checkCollision1(Spaceship& player, asteroid& Asteroid) {
     float distance = sqrt(pow(player.getX() - Asteroid.getX(), 2) + pow(player.getY() - Asteroid.getY(), 2));
     return distance < (player.getWidth() / 2 + Asteroid.getSize() * BASE_ASTEROID_SIZE);
@@ -214,16 +285,25 @@ bool game::checkCollision2(bullet& Bullet, asteroid& Asteroid) {
     return distance < (1 + Asteroid.getSize() * BASE_ASTEROID_SIZE);
 }
 
+bool game::checkCollision3(UFO& ufo, bullet& Bullet) {
+    float distance = sqrt(pow(Bullet.getX() - ufo.getX(), 2) + pow(Bullet.getY() - ufo.getY(), 2));
+    return distance < 1 + ufo.getSize();
+}
+
+bool game::checkCollision4(Spaceship& player, bullet& Bullet) {
+    float distance = sqrt(pow(player.getX() - Bullet.getX(), 2) + pow(player.getY() - Bullet.getY(), 2));
+    return distance < player.getWidth() / 2;
+}
+
 void game::render() {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
 
     Background.render();
-    if(inMenu) {
-        renderStartMenu();
-    }
+    if(inMenu) renderStartMenu();
     if (!gameOver) {
+
         //render asteroids
         for(auto& asteroid : asteroidsManager) {
             int size = asteroid.getSize(), x = asteroid.getX() - size * BASE_ASTEROID_SIZE , y = asteroid.getY() -  size * BASE_ASTEROID_SIZE;
@@ -233,6 +313,17 @@ void game::render() {
         //render bullets
         for(auto& bullet : bulletsManager) {
             renderTextureSpin(renderer, bulletTexture, bullet.getX() - 9, bullet.getY() - 18, 22, 40, bullet.getAngle() + 90);
+        }
+
+        //render UFO's bullets
+        for(auto& bullet : ufoBulletsManager) {
+            renderTextureSpin(renderer, ufoBulletTexture, bullet.getX() - 9, bullet.getY() - 18, 22, 40, bullet.getAngle() + 90);
+        }
+
+        //render ufo
+        for(auto& ufo : ufosManager) {
+            int size = ufo.getSize(), x = ufo.getX() - size, y = ufo.getY() - size;
+            renderTexture(renderer, ufoTexture, x, y, 2 * size, 2 * size);
         }
 
         //render explosion
@@ -249,8 +340,14 @@ void game::render() {
         }
     }
     else {
+        //render game over screen
         renderDarkBackground();
         renderGameOver(renderer, font, player.getScore());
+    }
+    //render paused screen
+    if(paused) {
+        renderDarkBackground();
+        renderPaused();
     }
 
     SDL_RenderPresent(renderer);
@@ -309,6 +406,20 @@ void game::renderGameOver(SDL_Renderer* renderer, TTF_Font* font, int score) {
 
     SDL_RenderCopy(renderer, scoreTexture, NULL, &scoreRect);
 
+    //render highest score
+    std::string highestScoreText = "highest score: " + to_string(highestScore);
+
+    SDL_Surface* hScoreSurface = TTF_RenderText_Solid(font, highestScoreText.c_str(), white);
+    SDL_Texture* hScoreTexture = SDL_CreateTextureFromSurface(renderer, hScoreSurface);
+
+    SDL_Rect hScoreRect;
+    hScoreRect.w = hScoreSurface->w;
+    hScoreRect.h = hScoreSurface->h;
+    hScoreRect.x = (SCREEN_WIDTH - hScoreRect.w) / 2;
+    hScoreRect.y = (SCREEN_HEIGHT - hScoreRect.h) / 2 + 150;
+
+    SDL_RenderCopy(renderer, hScoreTexture, NULL, &hScoreRect);
+
     //render button
     string buttonText = "Press [E] to exit or [TAB] to play again.";
 
@@ -348,7 +459,8 @@ void game::renderGameOver(SDL_Renderer* renderer, TTF_Font* font, int score) {
     SDL_FreeSurface(buttonSurface);
     SDL_DestroyTexture(timeTexture);
     SDL_FreeSurface(timeSurface);
-
+    SDL_DestroyTexture(hScoreTexture);
+    SDL_FreeSurface(hScoreSurface);
 }
 
 void game::renderTimer(SDL_Renderer* renderer, TTF_Font* font) {
@@ -442,6 +554,39 @@ void game::renderStartMenu() {
     SDL_FreeSurface(nameSurface);
     SDL_DestroyTexture(playTexture);
     SDL_FreeSurface(playSurface);
+    SDL_DestroyTexture(buttonTexture);
+    SDL_FreeSurface(buttonSurface);
+}
+
+void game::renderPaused() {
+    SDL_Color white = {255, 255, 255 , 255};
+
+    const string pausedText = "Game Paused";
+    SDL_Surface* pausedSurface = TTF_RenderText_Solid(font,  pausedText.c_str(), white);
+    SDL_Texture* pausedTexture = SDL_CreateTextureFromSurface(renderer, pausedSurface);
+    SDL_Rect textRect;
+    textRect.w = pausedSurface->w * 2;
+    textRect.h = pausedSurface->h * 2;
+    textRect.x = (SCREEN_WIDTH - textRect.w) / 2;
+    textRect.y = (SCREEN_WIDTH - textRect.h) / 2;
+    SDL_RenderCopy(renderer, pausedTexture, NULL, &textRect);
+
+    //render button
+    const string buttonText = "Press [E] to exit or [TAB] to play again.";
+
+    SDL_Surface* buttonSurface = TTF_RenderText_Solid(font, buttonText.c_str(), white);
+    SDL_Texture* buttonTexture = SDL_CreateTextureFromSurface(renderer, buttonSurface);
+
+    SDL_Rect buttonRect;
+    buttonRect.w = buttonSurface->w;
+    buttonRect.h = buttonSurface->h;
+    buttonRect.x = (SCREEN_WIDTH - buttonRect.w) / 2;
+    buttonRect.y = (SCREEN_HEIGHT - buttonRect.h) / 2 + 100;
+
+    SDL_RenderCopy(renderer, buttonTexture, NULL, &buttonRect);
+
+    SDL_DestroyTexture(pausedTexture);
+    SDL_FreeSurface(pausedSurface);
     SDL_DestroyTexture(buttonTexture);
     SDL_FreeSurface(buttonSurface);
 }
