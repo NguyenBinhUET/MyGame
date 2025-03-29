@@ -416,7 +416,7 @@ void game::renderGameOver(SDL_Renderer* renderer, TTF_Font* font, int score) {
     hScoreRect.w = hScoreSurface->w;
     hScoreRect.h = hScoreSurface->h;
     hScoreRect.x = (SCREEN_WIDTH - hScoreRect.w) / 2;
-    hScoreRect.y = (SCREEN_HEIGHT - hScoreRect.h) / 2 + 150;
+    hScoreRect.y = (SCREEN_HEIGHT - hScoreRect.h) / 2 + 100;
 
     SDL_RenderCopy(renderer, hScoreTexture, NULL, &hScoreRect);
 
@@ -430,7 +430,7 @@ void game::renderGameOver(SDL_Renderer* renderer, TTF_Font* font, int score) {
     buttonRect.w = buttonSurface->w;
     buttonRect.h = buttonSurface->h;
     buttonRect.x = (SCREEN_WIDTH - buttonRect.w) / 2;
-    buttonRect.y = (SCREEN_HEIGHT - buttonRect.h) / 2 + 200;
+    buttonRect.y = (SCREEN_HEIGHT - buttonRect.h) / 2 + 300;
 
     SDL_RenderCopy(renderer, buttonTexture, NULL, &buttonRect);
 
@@ -447,7 +447,7 @@ void game::renderGameOver(SDL_Renderer* renderer, TTF_Font* font, int score) {
     timeRect.w = timeSurface->w;
     timeRect.h = buttonSurface->h;
     timeRect.x = (SCREEN_WIDTH - timeRect.w) / 2;
-    timeRect.y = (SCREEN_HEIGHT - timeRect.h) / 2 + 100;
+    timeRect.y = (SCREEN_HEIGHT - timeRect.h) / 2 + 150;
 
     SDL_RenderCopy(renderer, timeTexture, NULL, &timeRect);
 

@@ -76,7 +76,7 @@
 	"bullet.h"
 	<SDL.h>
 
-1742399901 source:c:\users\admin\advanceprograming\game\mygame\main.cpp
+1742400002 source:c:\users\admin\advanceprograming\game\mygame\main.cpp
 	<iostream>
 	<string>
 	<vector>
@@ -108,7 +108,7 @@
 	"sound.h"
 	"helper.h"
 
-1742399245 source:c:\users\admin\advanceprograming\game\mygame\game.cpp
+1743054497 source:c:\users\admin\advanceprograming\game\mygame\game.cpp
 	"game.h"
 	<iostream>
 	<cmath>

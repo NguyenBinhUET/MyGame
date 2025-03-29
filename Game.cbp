@@ -50,8 +50,6 @@
 		<Unit filename="background.h" />
 		<Unit filename="bullet.cpp" />
 		<Unit filename="bullet.h" />
-		<Unit filename="button.cpp" />
-		<Unit filename="button.h" />
 		<Unit filename="constant.h" />
 		<Unit filename="explosion.cpp" />
 		<Unit filename="explosion.h" />
